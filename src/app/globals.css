@@ -1,49 +1,414 @@
+@import "tailwindcss";
+
+/*
+  Light only, on purpose: the page is a lit room, not a dark one. One locked
+  accent. The ground carries a soft atmosphere so the particle cloud has
+  somewhere to sit instead of floating on flat paper.
+*/
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: light;
+
+  --c-canvas: #f2f3f5;
+  --c-surface: #e6e9ed;
+  --c-ink: #10131a;
+  --c-ink-soft: #565e6b;
+  --c-accent: #c41e28;
+  --c-accent-ink: #ffffff;
+  --c-line: rgb(16 19 26 / 0.14);
+  --c-line-strong: rgb(16 19 26 / 0.34);
+
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+
+  --gutter: clamp(1.25rem, 5vw, 5.5rem);
+  --measure: 64ch;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+@theme inline {
+  --color-canvas: var(--c-canvas);
+  --color-surface: var(--c-surface);
+  --color-ink: var(--c-ink);
+  --color-ink-soft: var(--c-ink-soft);
+  --color-accent: var(--c-accent);
+  --color-accent-ink: var(--c-accent-ink);
+  --color-line: var(--c-line);
+  --color-line-strong: var(--c-line-strong);
+
+  --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+
+  --radius-none: 0px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  border-radius: 0;
 }
 
 html {
-  height: 100%;
+  background: var(--c-canvas);
+  -webkit-text-size-adjust: 100%;
 }
 
-html,
 body {
-  max-width: 100vw;
+  margin: 0;
+  background:
+    radial-gradient(120vw 85vh at 78% -10%, #ffffff 0%, rgb(255 255 255 / 0) 62%),
+    radial-gradient(90vw 70vh at 8% 14%, #fbfcfd 0%, rgb(251 252 253 / 0) 58%),
+    radial-gradient(110vw 90vh at 60% 108%, #e2e7ed 0%, rgb(226 231 237 / 0) 60%),
+    var(--c-canvas);
+  background-attachment: fixed;
+  color: var(--c-ink);
+  font-family: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+  font-synthesis-weight: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
 
-body {
-  min-height: 100%;
-  display: flex;
-  flex-direction: column;
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* Display type: same family, wider optical width. Tracking tightens as size grows. */
+.display {
+  font-variation-settings: "wdth" 118;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 0.96;
+  text-wrap: balance;
 }
 
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+.prose-measure {
+  max-width: var(--measure);
+  text-wrap: pretty;
+}
+
+::selection {
+  background: var(--c-accent);
+  color: var(--c-accent-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 3px;
 }
 
 a {
   color: inherit;
+  text-underline-offset: 0.22em;
+  text-decoration-thickness: from-font;
+}
+
+/* Numerals in anything that tabulates or counts. */
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+.rule {
+  border: 0;
+  border-top: 1px solid var(--c-line);
+}
+
+/* The flat portrait is the fallback. Once the 3D field is live it steps aside. */
+[data-three="on"] .portrait-fallback {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.portrait-fallback {
+  transition: opacity 0.5s var(--ease-out);
+}
+
+/* Everything written in the page sits above the fixed particle scene. */
+.above-scene {
+  position: relative;
+  z-index: 1;
+}
+
+/* Lines written into the margin as chapters are passed. */
+.ledger-line {
+  animation: ledger-write 0.7s var(--ease-out) both;
+}
+
+@keyframes ledger-write {
+  from {
+    opacity: 0;
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/*
+  Lenis smooth scroll. Required for it to measure and drive the document.
+*/
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/*
+  The journey. Document mode is the default and is what no-JS readers,
+  crawlers and reduced-motion readers get. `.immersive` is set by a head
+  script before first paint when WebGL is available, and turns every element
+  with a copy window into a panel pinned over the 3D scene.
+*/
+.journey-track,
+.journey-hud,
+.journey-flash {
+  display: none;
+}
+
+.panel {
+  padding: clamp(3rem, 8vw, 6rem) var(--gutter);
+}
+
+.panel-surface {
+  max-width: 46rem;
+}
+
+.immersive body {
+  background: #07080b;
+}
+
+.immersive .journey-track {
+  display: block;
+}
+
+.immersive .doc-only,
+.immersive .portrait-fallback {
+  display: none !important;
+}
+
+.immersive [data-from] {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  padding: clamp(4.75rem, 10vh, 7rem) var(--gutter) clamp(3rem, 8vh, 5rem);
+  pointer-events: none;
+  visibility: hidden;
+  opacity: var(--v, 0);
+  transform: translate3d(0, calc((1 - var(--v, 0)) * 26px), 0);
+  will-change: opacity, transform;
+}
+
+.immersive [data-from][data-side="right"] {
+  justify-content: flex-end;
+}
+
+.immersive .panel--intro {
+  visibility: visible;
+}
+
+.immersive .panel--intro .intro-copy {
+  max-width: min(40rem, 46vw);
+  color: #f2f3f5;
+}
+
+.immersive .panel--intro .intro-soft {
+  color: #a9b1bb;
+}
+
+.immersive .panel-surface {
+  width: min(34rem, 42vw);
+  max-width: none;
+  max-height: min(76vh, 46rem);
+  overflow: hidden;
+  padding: clamp(1.4rem, 2.3vw, 2.2rem);
+  background: rgb(250 251 252 / 0.9);
+  border: 1px solid var(--c-line);
+  box-shadow:
+    0 30px 80px rgb(16 19 26 / 0.12),
+    0 2px 8px rgb(16 19 26 / 0.05);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+.immersive .panel-surface--slim {
+  width: min(28rem, 36vw);
+}
+
+.immersive [data-panel-scroll] {
+  will-change: transform;
+}
+
+/* Headings lag the panel slightly as it arrives. */
+.immersive [data-from] h2 {
+  transform: translate3d(0, calc((1 - var(--v, 0)) * 0.45em), 0);
+}
+
+.journey-flash {
+  position: fixed;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(circle at 50% 50%, #ffffff 0%, #ffffff 38%, #eef0f3 100%);
+}
+
+.immersive .journey-flash,
+.immersive .journey-hud {
+  display: block;
+}
+
+.journey-hud {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  pointer-events: none;
+  color: var(--c-ink);
+  transition: color 0.45s var(--ease-out);
+}
+
+[data-tone="dark"] .journey-hud {
+  color: #e8eaec;
+}
+
+.journey-mark {
+  position: absolute;
+  top: max(1rem, calc(var(--gutter) / 3));
+  left: var(--gutter);
+  pointer-events: auto;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
   text-decoration: none;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
+.journey-chapters {
+  position: absolute;
+  top: max(1.05rem, calc(var(--gutter) / 3 + 0.05rem));
+  left: calc(var(--gutter) + 9.5rem);
+  display: none;
+  gap: 1.35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  pointer-events: auto;
+  font-size: 0.85rem;
+}
+
+.journey-chapters a {
+  text-decoration: none;
+  opacity: 0.5;
+  transition: opacity 0.2s var(--ease-out);
+}
+
+.journey-chapters a:hover,
+.journey-chapters a[aria-current="true"] {
+  opacity: 1;
+}
+
+@media (min-width: 1024px) {
+  .journey-chapters {
+    display: flex;
+  }
+}
+
+.journey-progress {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  background: rgb(128 132 140 / 0.2);
+}
+
+.journey-progress > span {
+  display: block;
+  height: 100%;
+  background: var(--c-accent);
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+@media (max-width: 767px) {
+  .immersive [data-from],
+  .immersive [data-from][data-side="right"] {
+    align-items: flex-end;
+    justify-content: stretch;
+    padding: 4.25rem 0.75rem 0.9rem;
+  }
+
+  .immersive .panel--intro {
+    padding-bottom: 2.25rem;
+  }
+
+  .immersive .panel--intro .intro-copy {
+    max-width: 100%;
+  }
+
+  .immersive .panel-surface,
+  .immersive .panel-surface--slim {
+    width: 100%;
+    max-height: 54vh;
+    background: rgb(250 251 252 / 0.96);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+/*
+  Reveals. Content is visible in the HTML as written. The hidden start states
+  exist only under `.js`, which a head script sets before first paint, and
+  RevealObserver releases them host by host. Without JavaScript, for crawlers,
+  or while hydration is slow, nothing on the page is blank.
+*/
+.reveal-mask {
+  /* Clip vertically only: a heading slightly wider than its column must not
+     lose its last letter. `clip` keeps the other axis visible. */
+  overflow-x: visible;
+  overflow-y: clip;
+  /* Room for cedillas and descenders (ç, ş, ğ) under the tight display leading. */
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+}
+
+[data-reveal] {
+  transition:
+    transform 0.9s var(--ease-out),
+    opacity 0.7s var(--ease-out),
+    clip-path 1s var(--ease-out);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.js [data-reveal-host]:not(.is-in) [data-reveal="line"] {
+  transform: translateY(112%);
+}
+
+.js [data-reveal-host]:not(.is-in) [data-reveal="wipe"] {
+  opacity: 0;
+  clip-path: inset(0 100% 0 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Keep the arrival, drop the movement. */
+  .js [data-reveal-host]:not(.is-in) [data-reveal] {
+    transform: none;
+    clip-path: none;
   }
 }

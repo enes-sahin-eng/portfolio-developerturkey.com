@@ -11,7 +11,7 @@
   --c-canvas: #f2f3f5;
   --c-surface: #e6e9ed;
   --c-ink: #10131a;
-  --c-ink-soft: #565e6b;
+  --c-ink-soft: #4a515d;
   --c-accent: #c41e28;
   --c-accent-ink: #ffffff;
   --c-line: rgb(16 19 26 / 0.14);
@@ -163,10 +163,11 @@ html.lenis body {
 /*
   The journey. Document mode is the default and is what no-JS readers,
   crawlers and reduced-motion readers get. `.immersive` is set by a head
-  script before first paint when WebGL is available, and turns every element
-  with a copy window into a panel pinned over the 3D scene.
+  script before first paint when WebGL is available. Copy is never pinned:
+  every chapter is a card that scrolls with the page, at the reader's own
+  speed, over the fixed 3D scene. The space between cards is where the camera
+  travels; CopyLayer maps each card's position to its window on the journey.
 */
-.journey-track,
 .journey-hud,
 .journey-flash {
   display: none;
@@ -184,35 +185,46 @@ html.lenis body {
   background: #07080b;
 }
 
-.immersive .journey-track {
-  display: block;
-}
-
 .immersive .doc-only,
 .immersive .portrait-fallback {
   display: none !important;
 }
 
+/* --v rises from 0 as a card enters and falls as it leaves the top. */
 .immersive [data-from] {
-  position: fixed;
-  inset: 0;
+  position: relative;
   z-index: 2;
   display: flex;
-  align-items: center;
-  padding: clamp(4.75rem, 10vh, 7rem) var(--gutter) clamp(3rem, 8vh, 5rem);
-  pointer-events: none;
-  visibility: hidden;
-  opacity: var(--v, 0);
-  transform: translate3d(0, calc((1 - var(--v, 0)) * 26px), 0);
-  will-change: opacity, transform;
+  margin-top: 70svh;
+  padding: 0 var(--gutter);
+  opacity: var(--v, 1);
+  transform: translate3d(0, calc((1 - var(--v, 1)) * 28px), 0);
 }
 
 .immersive [data-from][data-side="right"] {
   justify-content: flex-end;
 }
 
+/* The flight into the screen and the way back out get the longest gaps. */
+.immersive [data-gap="flight"] {
+  margin-top: 150svh;
+}
+
+.immersive [data-gap="short"] {
+  margin-top: 40svh;
+}
+
+.immersive [data-gap="exit"] {
+  margin-top: 130svh;
+  padding-bottom: 26svh;
+}
+
 .immersive .panel--intro {
-  visibility: visible;
+  min-height: 100svh;
+  margin-top: 0;
+  align-items: center;
+  padding-top: 5rem;
+  padding-bottom: 3rem;
 }
 
 .immersive .panel--intro .intro-copy {
@@ -225,12 +237,10 @@ html.lenis body {
 }
 
 .immersive .panel-surface {
-  width: min(34rem, 42vw);
+  width: min(36rem, max(44vw, 22rem));
   max-width: none;
-  max-height: min(76vh, 46rem);
-  overflow: hidden;
-  padding: clamp(1.4rem, 2.3vw, 2.2rem);
-  background: rgb(250 251 252 / 0.9);
+  padding: clamp(1.5rem, 2.4vw, 2.4rem);
+  background: rgb(250 251 252 / 0.93);
   border: 1px solid var(--c-line);
   box-shadow:
     0 30px 80px rgb(16 19 26 / 0.12),
@@ -240,16 +250,7 @@ html.lenis body {
 }
 
 .immersive .panel-surface--slim {
-  width: min(28rem, 36vw);
-}
-
-.immersive [data-panel-scroll] {
-  will-change: transform;
-}
-
-/* Headings lag the panel slightly as it arrives. */
-.immersive [data-from] h2 {
-  transform: translate3d(0, calc((1 - var(--v, 0)) * 0.45em), 0);
+  width: min(30rem, max(38vw, 20rem));
 }
 
 .journey-flash {
@@ -277,6 +278,19 @@ html.lenis body {
 
 [data-tone="dark"] .journey-hud {
   color: #e8eaec;
+}
+
+/* Cards pass under the fixed HUD; a short fade keeps it legible. */
+.immersive .journey-hud::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 4rem;
+  background: linear-gradient(to bottom, rgb(242 243 245 / 0.94) 55%, rgb(242 243 245 / 0));
+}
+
+.immersive[data-tone="dark"] .journey-hud::before {
+  background: linear-gradient(to bottom, rgb(7 8 11 / 0.82) 55%, rgb(7 8 11 / 0));
 }
 
 .journey-mark {
@@ -337,16 +351,17 @@ html.lenis body {
   transform-origin: left;
 }
 
+/* Phones: full width cards, the hero copy along the bottom, no blur to pay for. */
 @media (max-width: 767px) {
-  .immersive [data-from],
-  .immersive [data-from][data-side="right"] {
-    align-items: flex-end;
-    justify-content: stretch;
-    padding: 4.25rem 0.75rem 0.9rem;
+  .immersive [data-from] {
+    padding: 0 0.75rem;
   }
 
   .immersive .panel--intro {
-    padding-bottom: 2.25rem;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: stretch;
+    padding: 5rem 1.25rem 2.5rem;
   }
 
   .immersive .panel--intro .intro-copy {
@@ -356,10 +371,101 @@ html.lenis body {
   .immersive .panel-surface,
   .immersive .panel-surface--slim {
     width: 100%;
-    max-height: 54vh;
-    background: rgb(250 251 252 / 0.96);
+    padding: 1.5rem 1.25rem 1.75rem;
+    background: rgb(250 251 252 / 0.97);
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
+  }
+
+  /* The 3D panels are small on a phone, so screenshots also sit in the card. */
+  .immersive .doc-only:not(.portrait-fallback) {
+    display: block !important;
+  }
+}
+
+/*
+  WhatsApp. The recognisable green, with a dark glyph and label: white on this
+  green fails contrast. Floating, so it is in reach from every chapter.
+*/
+.wa-float {
+  position: fixed;
+  right: max(1rem, env(safe-area-inset-right));
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  z-index: 25;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  height: 3.25rem;
+  padding: 0 1.25rem 0 1rem;
+  border-radius: 999px;
+  background: #25d366;
+  color: #06170d;
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1;
+  text-decoration: none;
+  box-shadow:
+    0 12px 30px rgb(6 23 13 / 0.26),
+    0 2px 6px rgb(6 23 13 / 0.16);
+  transition:
+    transform 0.2s var(--ease-out),
+    box-shadow 0.2s var(--ease-out);
+}
+
+.wa-float:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 16px 36px rgb(6 23 13 / 0.3),
+    0 3px 8px rgb(6 23 13 / 0.18);
+}
+
+.wa-float:active {
+  transform: translateY(0);
+}
+
+.wa-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.75rem 1.2rem;
+  background: #25d366;
+  color: #06170d;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform 0.15s var(--ease-out);
+}
+
+.wa-button:active {
+  transform: translateY(1px);
+}
+
+.wa-icon {
+  width: 1.4rem;
+  height: 1.4rem;
+  flex: none;
+}
+
+@media (max-width: 767px) {
+  .wa-float {
+    width: 3.5rem;
+    height: 3.5rem;
+    padding: 0;
+    justify-content: center;
+  }
+
+  .wa-float .wa-icon {
+    width: 1.8rem;
+    height: 1.8rem;
+  }
+
+  .wa-float-text {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
   }
 }
 

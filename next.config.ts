@@ -7,6 +7,10 @@ const nextConfig: NextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
   },
+  experimental: {
+    // The root layout lives under [locale], so unmatched URLs need an app wide 404.
+    globalNotFound: true,
+  },
 };
 
 export default nextConfig;

@@ -6,7 +6,7 @@ export const tr: Content = {
     title: "Enes Şahin, Full Stack Developer",
     titleTemplate: "%s | Enes Şahin",
     description:
-      "Node.js, Express ve PostgreSQL ile ölçeklenebilir API'ler, Next.js ile çok dilli arayüzler geliştiren full stack developer. İstanbul merkezli, 2022'den beri üretimde çalışan projeler.",
+      "Node.js, Express ve PostgreSQL ile ölçeklenebilir API'ler, Next.js ile çok dilli arayüzler geliştiren full stack developer. İstanbul merkezli, 2022'den beri üretimde çalışan projeler geliştiriyor.",
     keywordsNote: "",
   },
   nav: {
@@ -28,17 +28,17 @@ export const tr: Content = {
     portraitAlt: "Enes Şahin'in siyah beyaz portresi",
   },
   about: {
-    heading: "Çerçeveden önce altındaki mantık",
+    heading: "Framework'ten önce, altındaki mantık",
     paragraphs: [
       "Yazılım Mühendisliği son sınıf öğrencisiyim. Ocak 2022'den beri gerçek bir e-ticaret işletmesinin backend'ini sıfırdan geliştiriyorum. Temmuz 2026'dan beri de bir dijital ajansta full stack stajyer olarak kurumsal ölçekli projelerde çalışıyorum.",
-      "Bir teknolojiyi kullanmadan önce altındaki mantığı anlamayı önemsiyorum. Bir veritabanını neden ilişkisel seçtiğimi, bir yetkilendirme katmanını neden middleware'e koyduğumu anlatabilmek benim için kütüphane sayısından daha değerli.",
+      "Bir teknolojiyi kullanmadan önce altındaki mantığı anlamayı önemsiyorum. Bir veritabanını neden ilişkisel seçtiğimi, bir yetkilendirme katmanını neden middleware'e koyduğumu anlatabilmek benim için bildiğim kütüphane sayısından daha değerli.",
       "Sağlam bir backend ve veri modelleme temelini, gerçek bir ürün geliştirme sürecinde mentorluk eşliğinde derinleştirebileceğim bir pozisyon arıyorum.",
     ],
   },
   work: {
-    heading: "Ne inşa ettim",
+    heading: "Neler geliştirdim",
     intro:
-      "Üretimde çalışan işler ve arkalarındaki kararlar. Müşteri projelerinde kurum adları paylaşılmıyor; bazı projelerde yalnızca mimari anlatılıyor ve görseller temsili.",
+      "Üretimde çalışan işler ve arkalarındaki kararlar. Müşteri projelerinde kurum adları paylaşılmıyor; bazı projelerde yalnızca mimari anlatılıyor ve görseller temsilidir.",
     projects: [
       {
         slug: "pnr-eticaret",
@@ -50,12 +50,12 @@ export const tr: Content = {
           {
             question: "Neden PostgreSQL ve Prisma?",
             answer:
-              "Sipariş ile stok arasındaki ilişki transaction bütünlüğü istiyor: yarım kalan bir sipariş stoktan düşmemeli. Bu kısıt, ilişkisel bir veritabanını NoSQL'e tercih ettirdi. Prisma'yı da şema ile kod arasındaki tek doğruyu korumak için seçtim.",
+              "Sipariş ile stok arasındaki ilişki transaction bütünlüğü istiyor: yarım kalan bir sipariş stoktan düşmemeli. Bu kısıt, ilişkisel bir veritabanını NoSQL'e tercih ettirdi. Prisma'yı da şema ile kod arasında tek bir doğruluk kaynağı olsun diye seçtim.",
           },
           {
             question: "Neden JWT ve rol bazlı yetkilendirme?",
             answer:
-              "Yönetici, tasarımcı ve müşteri rollerinin farklı yetkilere ihtiyacı vardı. Yetkilendirmeyi controller'lara dağıtmak yerine middleware katmanında (isAuth, isRole) merkezileştirdim; yeni bir uç eklerken yetki kararı tek yerde kalıyor.",
+              "Yönetici, tasarımcı ve müşteri rollerinin farklı yetkilere ihtiyacı vardı. Yetkilendirmeyi controller'lara dağıtmak yerine middleware katmanında (isAuth, isRole) merkezileştirdim; yeni bir uç nokta eklerken yetki kararı tek yerde kalıyor.",
           },
         ],
         stack: ["Next.js (App Router)", "Node.js", "Express", "TypeScript", "Prisma", "PostgreSQL", "Docker"],
@@ -76,7 +76,7 @@ export const tr: Content = {
           {
             question: "Arama görünürlüğü neden ayrı bir iş kalemi oldu?",
             answer:
-              "200'ü aşkın sayfa, birbirine yakın konularda yazıldığında aynı sorgu için kendi sayfalarıyla yarışmaya başlıyor. Google Search Console analizinde bu keyword cannibalization sorununu tespit edip sayfa niyetlerini ayrıştırdım.",
+              "Birbirine yakın konularda yazılmış 200'ü aşkın sayfa, aynı sorgu için birbiriyle yarışmaya başlıyor. Google Search Console analizinde bu keyword cannibalization sorununu tespit edip sayfa niyetlerini ayrıştırdım.",
           },
           {
             question: "Yapay zeka aramaları için ne yapıldı?",
@@ -99,9 +99,9 @@ export const tr: Content = {
         summary:
           "Sitedeki metinler, blog yazıları ve sıkça sorulan sorular işletmenin kendi yönetim panelinden değişiyor; içerik güncellemek için koda dokunmak gerekmiyor. Arkada kendi yazdığım bir Express API, önde bu içeriği her istekte sunucuda render eden bir Next.js uygulaması çalışıyor.",
         architecture: [
-          "Express ve TypeScript ile REST API, Prisma üzerinden PostgreSQL. Blog, SSS ve anahtar değer yapısındaki site metinleri ayrı modeller; okuma uçları herkese açık, yazma uçları isAuth middleware'inin arkasında.",
+          "Express ve TypeScript ile REST API, Prisma üzerinden PostgreSQL. Blog, SSS ve anahtar değer yapısındaki site metinleri ayrı modeller; okuma uç noktaları herkese açık, yazma uç noktaları isAuth middleware'inin arkasında.",
           "Yönetici girişi bcrypt ile doğrulanıyor. JWT, httpOnly ve sameSite ayarlı bir çerezde taşınıyor ve tarayıcıdaki JavaScript'e hiç açılmıyor. Panel, istekleri bu çerezle gönderen ayrı bir API istemcisi kullanıyor.",
-          "API, Coolify üzerinde Traefik reverse proxy arkasında çalışıyor. trust proxy ayarı sayesinde rate limit proxy'nin değil gerçek ziyaretçinin IP'sine göre uygulanıyor.",
+          "API, Coolify üzerinde Traefik reverse proxy arkasında çalışıyor. Express'in trust proxy ayarı sayesinde rate limit, proxy'nin değil gerçek ziyaretçinin IP'sine göre uygulanıyor.",
           "Arayüz önce statik export olarak kuruldu. Panelden yapılan her değişiklik yeniden deploy istediği için sunucu render'a geçirildi: içerik ham HTML'de kalıyor, güncellemeler build beklemeden yansıyor.",
           "Sitemap ve llms.txt blog yazılarını API'den okuyor, JSON-LD işletme bilgisini panel metinlerinden alıyor. Yayınlanan yazılar IndexNow ile Bing ve Yandex'e anında bildiriliyor.",
         ],
@@ -189,7 +189,7 @@ export const tr: Content = {
           "Next.js App Router ve TypeScript ile üç dilli, 200'den fazla sayfalık kurumsal bir siteyi sıfırdan geliştirdim.",
           "Dinamik metadata, canonical, hreflang, sitemap ve robots yapılandırmasını; Course, FAQPage ve BreadcrumbList JSON-LD şemalarını kurdum.",
           "Lighthouse ve Core Web Vitals metriklerini, görsel optimizasyonunu ve WCAG erişilebilirlik uyumunu iyileştirdim.",
-          "Devraldığım kod tabanlarını inceleyip kaldığı yerden geliştirdim, Laravel tabanlı bir projeye kısa sürede adapte oldum.",
+          "Devraldığım kod tabanlarını inceleyip kaldıkları yerden geliştirdim, Laravel tabanlı bir projeye kısa sürede adapte oldum.",
           "Yayına alma sürecini uçtan uca yürüttüm: Hostinger VPS, Coolify ile CI/CD, Cloudflare DNS, Vercel önizlemeleri ve cPanel.",
         ],
       },
@@ -215,7 +215,7 @@ export const tr: Content = {
     },
   },
   skills: {
-    heading: "Neye uzanıyorum",
+    heading: "Neler kullanıyorum",
     groups: [
       {
         name: "Backend",
@@ -251,8 +251,11 @@ export const tr: Content = {
     ],
     cvLabel: "CV indir",
     cvHref: site.cv.tr,
-    aside: "Küçük bir işletme için siteye ihtiyacınız varsa da yazabilirsiniz.",
-    asideLinkLabel: "WhatsApp",
+    aside: "Küçük bir işletme için siteye ihtiyacınız varsa WhatsApp'tan da yazabilirsiniz.",
+    whatsapp: {
+      label: "WhatsApp'tan yazın",
+      message: "Merhaba Enes, web siteniz üzerinden ulaşıyorum.",
+    },
   },
   ledger: {
     heading: "Okuduklarınız",

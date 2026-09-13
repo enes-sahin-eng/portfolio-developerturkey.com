@@ -70,7 +70,7 @@ export type Content = {
     cvLabel: string;
     cvHref: string;
     aside: string;
-    asideLinkLabel: string;
+    whatsapp: { label: string; message: string };
   };
   ledger: { heading: string; note: string; entries: { chapter: string; line: string }[] };
   footer: { rights: string };

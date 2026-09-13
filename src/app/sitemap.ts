@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { absoluteUrl, locales, localePath } from "@/lib/site";
+import { absoluteUrl, defaultLocale, locales, localePath } from "@/lib/site";
 
 /**
  * Evaluated once at build time, not per request. A date that moves on every
@@ -14,9 +14,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     changeFrequency: "monthly" as const,
     priority: locale === "tr" ? 1 : 0.9,
     alternates: {
-      languages: Object.fromEntries(
-        locales.map((l) => [l, absoluteUrl(localePath(l))]),
-      ),
+      languages: {
+        ...Object.fromEntries(locales.map((l) => [l, absoluteUrl(localePath(l))])),
+        "x-default": absoluteUrl(localePath(defaultLocale)),
+      },
     },
   }));
 }

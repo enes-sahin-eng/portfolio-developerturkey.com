@@ -1,12 +1,12 @@
-import type { CSSProperties } from "react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { isLocale, site } from "@/lib/site";
+import { isLocale, site, whatsappUrl } from "@/lib/site";
 import { getContent } from "@/lib/content";
 import { LanguageSwitch } from "@/components/LanguageSwitch";
+import { WhatsAppButton, WhatsAppIcon } from "@/components/WhatsAppButton";
 import { JourneyMount } from "@/components/world/JourneyMount";
 import { CopyLayer } from "@/components/journey/CopyLayer";
-import { ALSO_WINDOW, COPY_WINDOWS, TRACK_VH, WORK, projectWindow, type Window } from "@/lib/journey";
+import { ALSO_WINDOW, COPY_WINDOWS, WORK, projectWindow, type Window } from "@/lib/journey";
 
 /** Ties an element to its window on the journey. Numbers come straight from journey.ts. */
 const on = (window: Window) => ({ "data-from": window.from, "data-to": window.to });
@@ -53,20 +53,19 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
         <LanguageSwitch locale={locale} label={c.nav.languageLabel} />
       </header>
 
-      {/* The page is one journey. In immersive mode the track gives the scroll
-          its length and every panel below is pinned to its window on that
-          track. Without WebGL, or with reduced motion, the same markup reads
-          as an ordinary document. */}
-      <main className="above-scene">
-        <div className="journey-track" aria-hidden="true" style={{ height: `${TRACK_VH}vh` }} />
+      <WhatsAppButton label={c.contact.whatsapp.label} message={c.contact.whatsapp.message} />
 
+      {/* The page is one journey. In immersive mode every panel below is a
+          card scrolling over the 3D scene, tied to its window on the journey.
+          Without WebGL, or with reduced motion, the same markup reads as an
+          ordinary document. */}
+      <main className="above-scene">
         <section className="chapter" aria-labelledby="intro-title">
           <div
             id="top"
             className="panel panel--intro"
             data-side="left"
             {...on(COPY_WINDOWS.intro)}
-            style={{ "--v": 1 } as CSSProperties}
           >
             <div className="portrait-fallback doc-only mb-10 w-[min(60vw,15rem)]">
               <Image
@@ -103,9 +102,9 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
         </section>
 
         <section id={about.id} className="chapter" aria-labelledby={`${about.id}-title`}>
-          <div className="panel" data-side="left" {...on(COPY_WINDOWS.about)}>
-            <div className="panel-surface" data-panel-clip="">
-              <div data-panel-scroll="">
+          <div className="panel" data-side="left" data-gap="flight" {...on(COPY_WINDOWS.about)}>
+            <div className="panel-surface">
+              <div>
                 <h2 id={`${about.id}-title`} className="display m-0 text-[clamp(1.8rem,3.2vw,2.6rem)]">
                   {c.about.heading}
                 </h2>
@@ -113,7 +112,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
                   {c.about.paragraphs.map((paragraph, index) => (
                     <p
                       key={paragraph}
-                      className="m-0 text-[0.98rem]"
+                      className="m-0 text-[1.02rem]"
                       style={{ color: index === 0 ? "var(--c-ink)" : "var(--c-ink-soft)" }}
                     >
                       {paragraph}
@@ -127,8 +126,8 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
 
         <section id={work.id} className="chapter" aria-labelledby={`${work.id}-title`}>
           <div className="panel" data-side="left" {...on(workIntroWindow)}>
-            <div className="panel-surface panel-surface--slim" data-panel-clip="">
-              <div data-panel-scroll="">
+            <div className="panel-surface panel-surface--slim">
+              <div>
                 <h2 id={`${work.id}-title`} className="display m-0 text-[clamp(1.8rem,3.2vw,2.6rem)]">
                   {c.work.heading}
                 </h2>
@@ -146,8 +145,8 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
               data-side={index % 2 === 0 ? "left" : "right"}
               {...on(projectWindow(index))}
             >
-              <div className="panel-surface" data-panel-clip="">
-                <div data-panel-scroll="">
+              <div className="panel-surface">
+                <div>
                   {project.image && (
                     <div className="doc-only mb-6">
                       <Image
@@ -165,7 +164,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
                     {project.image?.illustrative ? `${project.kind}, ${c.work.illustrativeNote}` : project.kind}
                   </p>
                   <h3 className="display mt-3 mb-0 text-[clamp(1.35rem,2.3vw,1.85rem)]">{project.title}</h3>
-                  <p className="mt-4 mb-0 text-[0.95rem]" style={{ color: "var(--c-ink-soft)" }}>
+                  <p className="mt-4 mb-0 text-[1rem]" style={{ color: "var(--c-ink-soft)" }}>
                     {project.summary}
                   </p>
                   {project.architecture && (
@@ -177,7 +176,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
                         {project.architecture.map((item) => (
                           <li
                             key={item}
-                            className="border-l pl-4 text-[0.88rem]"
+                            className="border-l pl-4 text-[0.94rem]"
                             style={{ borderColor: "var(--c-accent)", color: "var(--c-ink-soft)" }}
                           >
                             {item}
@@ -191,7 +190,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
                       {project.decisions.map((decision) => (
                         <div key={decision.question} className="border-l pl-4" style={{ borderColor: "var(--c-accent)" }}>
                           <h4 className="m-0 text-[0.92rem] font-semibold">{decision.question}</h4>
-                          <p className="mt-2 mb-0 text-[0.88rem]" style={{ color: "var(--c-ink-soft)" }}>
+                          <p className="mt-2 mb-0 text-[0.94rem]" style={{ color: "var(--c-ink-soft)" }}>
                             {decision.answer}
                           </p>
                         </div>
@@ -206,9 +205,9 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
             </article>
           ))}
 
-          <div className="panel" data-side="right" {...on(ALSO_WINDOW)}>
-            <div className="panel-surface" data-panel-clip="">
-              <div data-panel-scroll="">
+          <div className="panel" data-side="left" data-gap="short" {...on(ALSO_WINDOW)}>
+            <div className="panel-surface">
+              <div>
                 <h3 className="m-0 text-[0.9rem] font-semibold">{c.work.alsoHeading}</h3>
                 <ul className="m-0 mt-5 flex list-none flex-col gap-5 p-0">
                   {c.work.also.map((item) => (
@@ -229,8 +228,8 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
 
         <section id={experience.id} className="chapter" aria-labelledby={`${experience.id}-title`}>
           <div className="panel" data-side="left" {...on(COPY_WINDOWS.experience)}>
-            <div className="panel-surface" data-panel-clip="">
-              <div data-panel-scroll="">
+            <div className="panel-surface">
+              <div>
                 <h2 id={`${experience.id}-title`} className="display m-0 text-[clamp(1.8rem,3.2vw,2.6rem)]">
                   {c.experience.heading}
                 </h2>
@@ -258,7 +257,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
                       )}
                       <ul className="m-0 mt-4 flex list-none flex-col gap-2.5 p-0">
                         {role.points.map((point) => (
-                          <li key={point} className="text-[0.9rem]" style={{ color: "var(--c-ink-soft)" }}>
+                          <li key={point} className="text-[0.95rem]" style={{ color: "var(--c-ink-soft)" }}>
                             {point}
                           </li>
                         ))}
@@ -284,8 +283,8 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
 
         <section id={skills.id} className="chapter" aria-labelledby={`${skills.id}-title`}>
           <div className="panel" data-side="left" {...on(COPY_WINDOWS.skills)}>
-            <div className="panel-surface" data-panel-clip="">
-              <div data-panel-scroll="">
+            <div className="panel-surface">
+              <div>
                 <h2 id={`${skills.id}-title`} className="display m-0 text-[clamp(1.8rem,3.2vw,2.6rem)]">
                   {c.skills.heading}
                 </h2>
@@ -311,9 +310,9 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
         </section>
 
         <section id={contact.id} className="chapter" aria-labelledby={`${contact.id}-title`}>
-          <div className="panel" data-side="right" {...on(COPY_WINDOWS.contact)}>
-            <div className="panel-surface" data-panel-clip="">
-              <div data-panel-scroll="">
+          <div className="panel" data-side="right" data-gap="exit" {...on(COPY_WINDOWS.contact)}>
+            <div className="panel-surface">
+              <div>
                 <h2 id={`${contact.id}-title`} className="display m-0 text-[clamp(2.2rem,4.4vw,3.4rem)]">
                   {c.contact.heading}
                 </h2>
@@ -332,24 +331,27 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
                     ))}
                   </div>
                 </div>
-                <a
-                  href={c.contact.cvHref}
-                  download
-                  className="mt-7 inline-flex items-center px-5 py-3 text-[0.95rem] no-underline transition-transform duration-150 active:translate-y-px"
-                  style={{ background: "var(--c-accent)", color: "var(--c-accent-ink)" }}
-                >
-                  {c.contact.cvLabel}
-                </a>
-                <p className="mt-7 mb-0 text-[0.84rem]" style={{ color: "var(--c-ink-soft)" }}>
-                  {c.contact.aside}{" "}
+                <div className="mt-7 flex flex-wrap items-center gap-3">
                   <a
-                    href={`https://wa.me/${site.person.phone.replace(/\D/g, "")}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="underline"
+                    href={c.contact.cvHref}
+                    download
+                    className="inline-flex items-center px-5 py-3 text-[0.95rem] no-underline transition-transform duration-150 active:translate-y-px"
+                    style={{ background: "var(--c-accent)", color: "var(--c-accent-ink)" }}
                   >
-                    {c.contact.asideLinkLabel}
+                    {c.contact.cvLabel}
                   </a>
+                  <a
+                    href={whatsappUrl(c.contact.whatsapp.message)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="wa-button"
+                  >
+                    <WhatsAppIcon className="wa-icon" />
+                    {c.contact.whatsapp.label}
+                  </a>
+                </div>
+                <p className="mt-4 mb-0 text-[0.84rem]" style={{ color: "var(--c-ink-soft)" }}>
+                  {c.contact.aside}
                 </p>
                 <p className="mt-6 mb-0 flex justify-between border-t pt-4 text-[0.78rem]" style={{ borderColor: "var(--c-line)", color: "var(--c-ink-soft)" }}>
                   <span>{c.footer.rights}</span>

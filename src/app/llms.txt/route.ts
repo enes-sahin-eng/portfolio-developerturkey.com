@@ -18,7 +18,10 @@ export function GET() {
 ## Who
 ${site.person.name} is a full stack developer based in ${site.person.location.city}, Turkey, and a final year Software Engineering student at ${site.education.institution}.
 
-Since January 2022 he has been building the backend of an e-commerce business with Node.js, Express, TypeScript, Prisma ORM and PostgreSQL, including JWT authentication and role based access control. Since July 2026 he has worked as a full stack developer intern at ideaZone Digital, where he built a three language corporate site of more than 200 pages with Next.js App Router and owned its search visibility, structured data and Core Web Vitals.
+Since January 2022 he has been building the backend of an e-commerce business with Node.js, Express, TypeScript, Prisma ORM and PostgreSQL, including JWT authentication and role-based access control. Since July 2026 he has worked as a full-stack developer intern at ideaZone Digital, where he built a three-language site of more than 200 pages for a multi-branch school with Next.js App Router and owned its search visibility, structured data and Core Web Vitals.
+
+## Selected work
+${en.work.projects.map((project) => `- ${project.title} (${project.kind}): ${project.summary}`).join("\n")}
 
 ## What he works with
 ${en.skills.groups.map((g) => `- ${g.name}: ${g.items.join(", ")}`).join("\n")}
@@ -28,7 +31,8 @@ ${en.skills.groups.map((g) => `- ${g.name}: ${g.items.join(", ")}`).join("\n")}
 - Email: ${site.person.email}
 - GitHub: ${site.social.github}
 - LinkedIn: ${site.social.linkedin}
-- CV (Turkish): ${absoluteUrl(site.cv.tr)}
+- CV (Turkish, PDF): ${absoluteUrl(site.cv.tr)}
+- CV (English, Word): ${absoluteUrl(site.cv.en)}
 `;
 
   return new Response(body, {

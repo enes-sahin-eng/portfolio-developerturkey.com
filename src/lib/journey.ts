@@ -4,8 +4,8 @@
  * which each chapter's copy is on screen all read from here, so the 3D scene
  * and the HTML can never drift apart.
  *
- * Moments are authored in beats and exposed as progress, 0..1 over the scroll
- * track. Adding a project adds beats; nothing else has to be renumbered.
+ * Moments are authored in beats and exposed as progress, 0..1 over the whole
+ * journey. Adding a project adds beats; nothing else has to be renumbered.
  */
 
 export type Vec3 = readonly [number, number, number];
@@ -122,6 +122,9 @@ export const EXIT_APERTURE_SIZE = { width: 4.4, height: 2.75 } as const;
 
 /** How deep the inner world goes, so the ground always reaches past the exit. */
 export const WORLD_DEPTH = -EXIT_APERTURE[2] + 10;
+
+/** What the camera looks at in each inner chapter. Phones recentre the frame on the nearest one. */
+export const INNER_SUBJECTS: readonly Vec3[] = [GUIDE, ...PROJECT_STOPS, EXPERIENCE_ANCHOR, SKILLS_ANCHOR];
 
 /** Where the camera stands to read a project panel. */
 export function projectCamera(index: number): { position: Vec3; target: Vec3 } {
@@ -285,6 +288,3 @@ export function smooth(a: number, b: number, x: number) {
   const t = Math.min(1, Math.max(0, (x - a) / (b - a)));
   return t * t * t * (t * (t * 6 - 15) + 10);
 }
-
-/** Scroll track length in viewport heights. Every beat gets the same scroll distance. */
-export const TRACK_VH = TOTAL_BEATS * 15;

@@ -48,3 +48,8 @@ export function localePath(locale: Locale, path = "") {
 export function absoluteUrl(path: string) {
   return `${site.url}${path}`;
 }
+
+/** A WhatsApp chat with the number above, the first message already written. */
+export function whatsappUrl(message: string) {
+  return `https://wa.me/${site.person.phone.replace(/\D/g, "")}?text=${encodeURIComponent(message)}`;
+}

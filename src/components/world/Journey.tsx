@@ -3,10 +3,11 @@
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Environment, Lightformer } from "@react-three/drei";
-import { useScroll, type MotionValue } from "motion/react";
+import type { MotionValue } from "motion/react";
 import Lenis from "lenis";
 import * as THREE from "three";
-import { COMPACT_ROOM, cameraAt, flashAt, roomLight, smooth, type Space } from "@/lib/journey";
+import { COMPACT_ROOM, INNER_SUBJECTS, cameraAt, flashAt, roomLight, smooth, type Space } from "@/lib/journey";
+import { journeyProgress } from "@/lib/journeyProgress";
 import { ATMOSPHERE_LAYER, Room } from "./Room";
 import { InnerWorld, type ProjectVisual } from "./InnerWorld";
 
@@ -85,15 +86,31 @@ function World({
 
     let targetX = pose.target[0];
     let targetY = pose.target[1];
-    // On a phone the copy is a sheet along the bottom, so in the room the laptop
-    // is centred and lifted into the top half. Faded out during the approach,
-    // where the lens has to stay squared up to the screen.
+    // On a phone the copy flows as cards below the scene, so in the room the
+    // laptop is centred and lifted into the top half. Faded out during the
+    // approach, where the lens has to stay squared up to the screen.
     if (compact && pose.space === "room") {
       const opening = 1 - smooth(...COMPACT_ROOM.opening, p);
       const closing = smooth(...COMPACT_ROOM.closing, p);
       const weight = Math.max(opening, closing);
       targetX += (0 - targetX) * weight;
       targetY -= 0.5 * weight;
+    }
+    // Inside, desktop frames leave half the view for the copy panel. A phone
+    // has no side panel, so the frame centres on whatever is being looked at.
+    if (compact && pose.space === "inner") {
+      let subject = INNER_SUBJECTS[0];
+      let nearest = Infinity;
+      for (const candidate of INNER_SUBJECTS) {
+        const distance = Math.abs(candidate[2] - pose.target[2]);
+        if (distance < nearest) {
+          nearest = distance;
+          subject = candidate;
+        }
+      }
+      const weight = 1 - smooth(1.5, 6, nearest);
+      targetX += (subject[0] - targetX) * weight;
+      targetY -= 0.8 * weight;
     }
     look.set(targetX, targetY, pose.target[2]);
     perspective.lookAt(look);
@@ -144,15 +161,14 @@ function World({
 }
 
 /**
- * One fixed scene behind the whole page. Page scroll is the only timeline:
- * the room, the flight through the screen and the world inside are one
- * continuous camera path, not separate section effects.
+ * One fixed scene behind the whole page. Journey progress is the only
+ * timeline: the room, the flight through the screen and the world inside are
+ * one continuous camera path, not separate section effects.
  */
 export function Journey({ projects, skillCounts }: { projects: ProjectVisual[]; skillCounts: number[] }) {
   const [ready, setReady] = useState(false);
   const [quality, setQuality] = useState({ lowPower: false, compact: false });
   const pointer = useRef({ x: 0, y: 0 });
-  const { scrollYProgress } = useScroll();
 
   useEffect(() => {
     const root = document.documentElement;
@@ -169,7 +185,7 @@ export function Journey({ projects, skillCounts }: { projects: ProjectVisual[]; 
     setReady(true);
     root.dataset.three = "on";
 
-    // Anchors are handled by CopyLayer: pinned panels have no offset of their own.
+    // Anchors are handled by CopyLayer, which knows where each card sits.
     const lenis = new Lenis({ autoRaf: true, lerp: 0.085, smoothWheel: true });
     (window as Window & { __lenis?: Lenis }).__lenis = lenis;
 
@@ -205,7 +221,7 @@ export function Journey({ projects, skillCounts }: { projects: ProjectVisual[]; 
       >
         <Suspense fallback={null}>
           <World
-            progress={scrollYProgress}
+            progress={journeyProgress}
             pointer={pointer}
             lowPower={quality.lowPower}
             compact={quality.compact}

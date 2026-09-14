@@ -64,6 +64,9 @@ async function sample(url: string, gridW: number): Promise<Sampled> {
   image.crossOrigin = "anonymous";
   image.src = url;
   await image.decode();
+  if (!image.naturalWidth || !image.naturalHeight) {
+    throw new Error(`Portrait image has no natural size: ${url}`);
+  }
 
   const gridH = Math.round((gridW * image.naturalHeight) / image.naturalWidth);
   const canvas = document.createElement("canvas");
@@ -242,9 +245,11 @@ export function PortraitField({
 
   useEffect(() => {
     let cancelled = false;
-    sample(SRC, lowPower ? 132 : SAMPLE_W).then((result) => {
-      if (!cancelled) setData(result);
-    });
+    sample(SRC, lowPower ? 132 : SAMPLE_W)
+      .then((result) => {
+        if (!cancelled) setData(result);
+      })
+      .catch(() => {});
     return () => {
       cancelled = true;
     };

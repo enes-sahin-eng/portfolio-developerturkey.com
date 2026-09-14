@@ -20,7 +20,10 @@ const cache = new Map<number, Promise<PortraitData>>();
 export function loadPortrait(gridWidth: number): Promise<PortraitData> {
   let pending = cache.get(gridWidth);
   if (!pending) {
-    pending = sample(gridWidth);
+    pending = sample(gridWidth).catch((error) => {
+      cache.delete(gridWidth);
+      throw error;
+    });
     cache.set(gridWidth, pending);
   }
   return pending;
@@ -31,6 +34,9 @@ async function sample(gridWidth: number): Promise<PortraitData> {
   image.decoding = "async";
   image.src = SRC;
   await image.decode();
+  if (!image.naturalWidth || !image.naturalHeight) {
+    throw new Error(`Portrait image has no natural size: ${SRC}`);
+  }
 
   const gridHeight = Math.round((gridWidth * image.naturalHeight) / image.naturalWidth);
   const canvas = document.createElement("canvas");

@@ -81,9 +81,11 @@ export function PortraitGuide({
 
   useEffect(() => {
     let cancelled = false;
-    loadPortrait(lowPower ? 132 : 210).then((result) => {
-      if (!cancelled) setData(result);
-    });
+    loadPortrait(lowPower ? 132 : 210)
+      .then((result) => {
+        if (!cancelled) setData(result);
+      })
+      .catch(() => {});
     return () => {
       cancelled = true;
     };

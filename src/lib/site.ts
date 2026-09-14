@@ -7,7 +7,8 @@ export function isLocale(value: string): value is Locale {
 }
 
 export const site = {
-  url: "https://developerturkey.com",
+  // Vercel serves www as production; the apex 308s to it. Canonicals must not point at a redirect.
+  url: "https://www.developerturkey.com",
   person: {
     name: "Enes Şahin",
     givenName: "Enes",

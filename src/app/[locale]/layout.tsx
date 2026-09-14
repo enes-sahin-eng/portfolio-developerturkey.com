@@ -52,11 +52,13 @@ export async function generateMetadata({
       alternateLocale: locales.filter((l) => l !== locale).map((l) => ogLocale[l]),
       firstName: site.person.givenName,
       lastName: site.person.familyName,
+      images: [{ url: site.portrait, width: 288, height: 357, alt: c.hero.portraitAlt }],
     },
     twitter: {
-      card: "summary_large_image",
+      card: "summary",
       title: c.meta.title,
       description: c.meta.description,
+      images: [{ url: site.portrait, alt: c.hero.portraitAlt }],
     },
     robots: {
       index: true,

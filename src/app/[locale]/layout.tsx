@@ -31,7 +31,7 @@ export async function generateMetadata({
     metadataBase: new URL(site.url),
     title: { default: c.meta.title, template: c.meta.titleTemplate },
     description: c.meta.description,
-    applicationName: site.person.name,
+    applicationName: site.name,
     authors: [{ name: site.person.name, url: site.url }],
     creator: site.person.name,
     alternates: {
@@ -45,7 +45,7 @@ export async function generateMetadata({
     openGraph: {
       type: "profile",
       url: localePath(locale),
-      siteName: site.person.name,
+      siteName: site.name,
       title: c.meta.title,
       description: c.meta.description,
       locale: ogLocale[locale],

@@ -8,6 +8,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return locales.map((locale) => ({
     url: absoluteUrl(localePath(locale)),
     lastModified,
+    priority: 1,
     alternates: {
       languages: {
         ...Object.fromEntries(locales.map((l) => [l, absoluteUrl(localePath(l))])),

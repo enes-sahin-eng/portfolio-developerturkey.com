@@ -11,7 +11,7 @@ const archivo = Archivo({
 });
 
 export const metadata: Metadata = {
-  title: "Sayfa bulunamadı | Enes Şahin",
+  title: "Sayfa bulunamadı | Developer Turkey",
   description: "Aradığınız sayfa bulunamadı. The page you are looking for does not exist.",
 };
 

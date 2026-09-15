@@ -7,7 +7,7 @@ export function GET() {
   const tr = getContent("tr");
   const en = getContent("en");
 
-  const body = `# ${site.person.name}
+  const body = `# ${site.name}
 
 > ${en.meta.description}
 

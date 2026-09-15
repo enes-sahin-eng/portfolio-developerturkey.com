@@ -3,8 +3,8 @@ import type { Content } from "./types";
 
 export const en: Content = {
   meta: {
-    title: "Enes Şahin, Full Stack Developer",
-    titleTemplate: "%s | Enes Şahin",
+    title: "Enes Şahin, Full Stack Web Developer | Developer Turkey",
+    titleTemplate: "%s | Developer Turkey",
     description:
       "Enes Şahin, full stack web developer in Istanbul. I build fast, scalable web apps with Node.js, Next.js and PostgreSQL. Get in touch today!",
     keywordsNote: "",
@@ -269,7 +269,7 @@ export const en: Content = {
     ],
   },
   footer: {
-    rights: "Enes Şahin",
+    rights: "Enes Şahin · Developer Turkey",
   },
   a11y: {
     skipToContent: "Skip to content",

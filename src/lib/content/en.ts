@@ -6,7 +6,7 @@ export const en: Content = {
     title: "Enes Şahin, Full Stack Developer",
     titleTemplate: "%s | Enes Şahin",
     description:
-      "Full stack developer building scalable APIs with Node.js, Express and PostgreSQL, and multilingual interfaces with Next.js. Based in Istanbul, shipping production work since 2022.",
+      "Enes Şahin, full stack web developer in Istanbul. I build fast, scalable web apps with Node.js, Next.js and PostgreSQL. Get in touch today!",
     keywordsNote: "",
   },
   nav: {

@@ -73,7 +73,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
                 alt={c.hero.portraitAlt}
                 width={288}
                 height={357}
-                priority
+                loading="eager"
                 sizes="(max-width: 768px) 60vw, 240px"
                 className="h-auto w-full"
               />

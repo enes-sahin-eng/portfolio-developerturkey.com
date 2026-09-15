@@ -1,18 +1,13 @@
 import type { MetadataRoute } from "next";
 import { absoluteUrl, defaultLocale, locales, localePath } from "@/lib/site";
 
-/**
- * Evaluated once at build time, not per request. A date that moves on every
- * crawl teaches crawlers to stop trusting it.
- */
-const lastModified = new Date();
+// Bump only when page content changes. A date that moves on every deploy teaches crawlers to ignore it.
+const lastModified = "2026-09-15";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return locales.map((locale) => ({
     url: absoluteUrl(localePath(locale)),
     lastModified,
-    changeFrequency: "monthly" as const,
-    priority: locale === "tr" ? 1 : 0.9,
     alternates: {
       languages: {
         ...Object.fromEntries(locales.map((l) => [l, absoluteUrl(localePath(l))])),

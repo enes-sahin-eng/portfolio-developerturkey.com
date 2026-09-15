@@ -6,7 +6,7 @@ export const tr: Content = {
     title: "Enes Şahin, Full Stack Developer",
     titleTemplate: "%s | Enes Şahin",
     description:
-      "Node.js, Express ve PostgreSQL ile ölçeklenebilir API'ler, Next.js ile çok dilli arayüzler geliştiren full stack developer. İstanbul merkezli, 2022'den beri üretimde çalışan projeler geliştiriyor.",
+      "Enes Şahin, İstanbul'da full stack web geliştirici. Node.js, Next.js ve PostgreSQL ile ölçeklenebilir web uygulamaları geliştiriyorum. Hemen iletişime geç!",
     keywordsNote: "",
   },
   nav: {

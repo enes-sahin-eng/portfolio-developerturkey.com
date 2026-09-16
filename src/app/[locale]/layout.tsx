@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import { Archivo } from "next/font/google";
 import { htmlLang, isLocale, locales, localePath, ogLocale, site } from "@/lib/site";
 import { getContent } from "@/lib/content";
-import { buildGraph } from "@/lib/schema";
 import { MotionProvider } from "@/components/motion-parts";
 import "../globals.css";
 
@@ -18,6 +17,7 @@ export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
 
+/** Describes the home page. Other pages under this layout replace canonical, hreflang and Open Graph. */
 export async function generateMetadata({
   params,
 }: {
@@ -84,29 +84,25 @@ export default async function LocaleLayout({
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
 
-  const graph = buildGraph(locale);
-
   return (
     // The head script adds `js` to <html> before hydration, which React would
     // otherwise report as an attribute mismatch on this one element.
     <html lang={htmlLang[locale]} className={archivo.variable} suppressHydrationWarning>
       <head>
         {/* Runs before first paint. `js` enables reveal start states; `immersive`
-            turns the page into the 3D journey when WebGL exists and motion is
-            welcome. The journey removes it again if WebGL fails to start, and
-            without JavaScript the page stays an ordinary readable document. */}
+            turns the home page into the 3D journey when WebGL exists and motion is
+            welcome. Only the home page (a single path segment) has a journey, so
+            the blog stays an ordinary reading page. The journey removes the class
+            again if WebGL fails to start, and without JavaScript the page stays an
+            ordinary readable document. */}
         <script
           dangerouslySetInnerHTML={{
             __html:
-              "(function(){var r=document.documentElement;r.classList.add('js');try{if(window.WebGLRenderingContext&&!matchMedia('(prefers-reduced-motion: reduce)').matches){r.classList.add('immersive');r.dataset.tone='dark'}}catch(e){}})()",
+              "(function(){var r=document.documentElement;r.classList.add('js');try{if(location.pathname.split('/').filter(Boolean).length<2&&window.WebGLRenderingContext&&!matchMedia('(prefers-reduced-motion: reduce)').matches){r.classList.add('immersive');r.dataset.tone='dark'}}catch(e){}})()",
           }}
         />
       </head>
       <body>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(graph) }}
-        />
         <MotionProvider>{children}</MotionProvider>
       </body>
     </html>

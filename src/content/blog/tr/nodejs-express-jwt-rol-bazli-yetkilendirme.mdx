@@ -1,0 +1,106 @@
+2022'den beri Node.js ve Express ile geliştirdiğim bir e-ticaret backend'inde kimlik doğrulamayı JWT ile, yetkilendirmeyi de rol bazlı bir ara katmanla (middleware) çözüyorum. Bu yazıda bu kurulumu, üzerinde çalıştığım gerçek projeden çıkardığım kararlarla birlikte anlatıyorum.
+
+## JWT nasıl çalışır, kısaca
+
+JSON Web Token, sunucunun imzaladığı ve içine kullanıcı hakkında bilgi (id, rol gibi) gömdüğü bir metin parçasıdır. Kullanıcı giriş yaptığında sunucu bu token'ı üretir, istemci de sonraki her istekte `Authorization` başlığında geri gönderir. Sunucu token'ın imzasını doğrular ve içindeki bilgiye güvenir; her istekte veritabanına gidip oturum kontrol etmesine gerek kalmaz.
+
+Burada iki token kullanıyorum:
+
+- **Access token**: kısa ömürlü (benim projemde 15 dakika), her API isteğinde gönderilir.
+- **Refresh token**: uzun ömürlü, sadece yeni bir access token almak için kullanılır ve `httpOnly` cookie'de saklanır.
+
+Access token'ı `localStorage`'da değil, bellekte (in-memory) tutuyorum. `localStorage` JavaScript'ten okunabildiği için bir XSS açığı doğrudan token çalınmasına dönüşür; sayfa yenilendiğinde de zaten refresh token'la yeni bir access token alınıyor.
+
+## Token üretimi
+
+```ts title="src/lib/tokens.ts"
+import jwt from "jsonwebtoken";
+
+type Payload = { userId: string; role: "admin" | "customer" };
+
+export function signAccessToken(payload: Payload) {
+  return jwt.sign(payload, process.env.JWT_ACCESS_SECRET!, { expiresIn: "15m" });
+}
+
+export function signRefreshToken(payload: Payload) {
+  return jwt.sign(payload, process.env.JWT_REFRESH_SECRET!, { expiresIn: "7d" });
+}
+```
+
+Access ve refresh token için ayrı gizli anahtar (secret) kullanıyorum. Biri sızarsa diğerini iptal etmeden değiştirebiliyorum, iki token da aynı anahtara bağlı olmuyor.
+
+## Kimlik doğrulama ara katmanı
+
+İstek geldiğinde önce token'ın geçerli olup olmadığına bakan, sonra kullanıcıyı `req` nesnesine ekleyen bir ara katman yazıyorum:
+
+```ts title="src/middleware/authenticate.ts"
+import type { Request, Response, NextFunction } from "express";
+import jwt from "jsonwebtoken";
+
+export type AuthedRequest = Request & { user?: { userId: string; role: string } };
+
+export function authenticate(req: AuthedRequest, res: Response, next: NextFunction) {
+  const header = req.headers.authorization;
+  const token = header?.startsWith("Bearer ") ? header.slice(7) : null;
+  if (!token) return res.status(401).json({ message: "Oturum bulunamadı" });
+
+  try {
+    req.user = jwt.verify(token, process.env.JWT_ACCESS_SECRET!) as AuthedRequest["user"];
+    next();
+  } catch {
+    res.status(401).json({ message: "Token geçersiz veya süresi dolmuş" });
+  }
+}
+```
+
+## Rol bazlı yetkilendirme
+
+Kimlik doğrulama "bu kullanıcı kim" sorusuna cevap veriyor, yetkilendirme ise "bu kullanıcı bunu yapabilir mi" sorusuna. İkisini ayrı ara katmanlarda tutuyorum, çünkü aynı endpoint'e farklı rollerin farklı erişimi olabiliyor:
+
+```ts title="src/middleware/requireRole.ts"
+import type { Response, NextFunction } from "express";
+import type { AuthedRequest } from "./authenticate";
+
+export function requireRole(...allowed: string[]) {
+  return (req: AuthedRequest, res: Response, next: NextFunction) => {
+    if (!req.user || !allowed.includes(req.user.role)) {
+      return res.status(403).json({ message: "Bu işlem için yetkin yok" });
+    }
+    next();
+  };
+}
+```
+
+Kullanımı route tanımında okunaklı kalıyor:
+
+```ts title="src/routes/orders.ts"
+router.get("/orders", authenticate, requireRole("admin"), listAllOrders);
+router.get("/orders/me", authenticate, listMyOrders);
+```
+
+## Sık yapılan bir hata: sahiplik kontrolünü atlamak
+
+Rol kontrolü tek başına yeterli değil. `GET /orders/:id` gibi bir endpoint'te "giriş yapmış herhangi bir müşteri" kontrolü geçse bile, o siparişin gerçekten isteği yapan kullanıcıya ait olup olmadığını ayrıca kontrol etmek gerekiyor:
+
+```ts title="src/controllers/orders.ts"
+export async function getOrder(req: AuthedRequest, res: Response) {
+  const order = await db.order.findUnique({ where: { id: req.params.id } });
+  if (!order) return res.status(404).json({ message: "Sipariş bulunamadı" });
+
+  const isOwner = order.userId === req.user!.userId;
+  const isAdmin = req.user!.role === "admin";
+  if (!isOwner && !isAdmin) return res.status(403).json({ message: "Bu siparişe erişimin yok" });
+
+  res.json(order);
+}
+```
+
+Bu satırı atlamak, `requireRole("customer")` geçen herhangi bir müşterinin URL'deki id'yi değiştirerek başka bir kullanıcının siparişini görebilmesi anlamına gelir. Rol kontrolü "müşteri misin" diye sorar, sahiplik kontrolü "bu kayıt senin mi" diye sorar; ikisi farklı sorular ve ikisi de gerekli.
+
+## Refresh token'ı iptal edebilmek
+
+Access token'lar kısa ömürlü olduğu için imzalandıktan sonra iptal edilemez, süresinin dolmasını beklemek gerekir. Refresh token'lar için durum farklı: kullanıcı çıkış yaptığında ya da şifresini değiştirdiğinde o token'ın artık geçersiz olmasını istiyorum. Bunun için refresh token'ların hash'ini veritabanında tutuyorum, gelen token bu tabloda yoksa reddediyorum. Token'ın kendisini değil hash'ini saklamak, veritabanı sızsa bile token'ların doğrudan kullanılabilir olmasını engelliyor.
+
+## Sonuç
+
+Bu kurulumun özeti: kısa ömürlü access token bellekte, uzun ömürlü refresh token `httpOnly` cookie'de; kimlik doğrulama ve rol kontrolü ayrı ara katmanlarda; rol kontrolünün üstüne, kaydın gerçekten o kullanıcıya ait olup olmadığını kontrol eden bir sahiplik kontrolü. Küçük bir API için fazla gelebilir ama büyüyen bir projede bu ayrım sonradan söküp takmayı kolaylaştırıyor.

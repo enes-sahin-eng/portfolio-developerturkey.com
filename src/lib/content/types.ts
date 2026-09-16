@@ -73,6 +73,25 @@ export type Content = {
     whatsapp: { label: string; message: string };
   };
   ledger: { heading: string; note: string; entries: { chapter: string; line: string }[] };
+  blog: {
+    navLabel: string;
+    /** Topic only; the layout template appends the brand. */
+    title: string;
+    description: string;
+    heading: string;
+    intro: string;
+    empty: { line: string; homeLabel: string };
+    breadcrumbLabel: string;
+    breadcrumbHome: string;
+    published: string;
+    updated: string;
+    /** `{minutes}` is replaced with the reading time. */
+    readingTime: string;
+    toc: string;
+    allPosts: string;
+    pillar: string;
+    contact: { heading: string; line: string; label: string };
+  };
   footer: { rights: string };
   a11y: { skipToContent: string; chapterNav: string };
 };

@@ -518,3 +518,494 @@ html.lenis body {
     clip-path: none;
   }
 }
+
+/*
+  Blog. The lit room from the journey, with the scene switched off: a reading
+  surface on the same ground, ink and single red. The one deliberate move is
+  the red line, which draws under a post title when it is chosen and tracks
+  the read on an article, as it tracks the journey on the home page.
+*/
+.blog-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100svh;
+}
+
+.blog-header {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1rem var(--gutter);
+  border-bottom: 1px solid var(--c-line);
+}
+
+.blog-mark {
+  margin-right: auto;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+}
+
+.blog-nav-link {
+  font-size: 0.9rem;
+  color: var(--c-ink-soft);
+  text-decoration: none;
+}
+
+.blog-nav-link:hover,
+.blog-nav-link[aria-current="page"] {
+  color: var(--c-ink);
+}
+
+.blog-main {
+  flex: 1;
+  padding: clamp(2rem, 5vw, 4rem) var(--gutter) clamp(4rem, 9vw, 7rem);
+}
+
+/* One line at every width: a long post title shortens instead of wrapping onto a line that starts with "/". */
+.breadcrumbs ol {
+  display: flex;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.85rem;
+  color: var(--c-ink-soft);
+  white-space: nowrap;
+}
+
+.breadcrumbs li {
+  flex: none;
+}
+
+.breadcrumbs li:last-child {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.breadcrumbs li + li::before {
+  content: "/";
+  margin-right: 0.5rem;
+  opacity: 0.45;
+}
+
+.breadcrumbs a {
+  text-decoration: none;
+}
+
+.breadcrumbs a:hover {
+  color: var(--c-ink);
+}
+
+.blog-title {
+  max-width: 16ch;
+  margin: clamp(2.5rem, 6vw, 4.5rem) 0 0;
+  font-size: clamp(2.6rem, 7.2vw, 6rem);
+}
+
+.blog-intro {
+  max-width: 44ch;
+  margin: 1.5rem 0 0;
+  font-size: clamp(1.05rem, 1.6vw, 1.25rem);
+  color: var(--c-ink-soft);
+  text-wrap: pretty;
+}
+
+.post-list {
+  margin: clamp(3.5rem, 8vw, 6rem) 0 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--c-line-strong);
+}
+
+.post-row {
+  display: grid;
+  gap: 0.75rem 3rem;
+  padding-block: clamp(1.75rem, 3.2vw, 2.75rem);
+  color: inherit;
+  text-decoration: none;
+}
+
+@media (min-width: 768px) {
+  .post-row {
+    grid-template-columns: 13rem minmax(0, 52rem);
+  }
+}
+
+.post-row-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  padding-top: 0.35rem;
+  font-size: 0.85rem;
+  color: var(--c-ink-soft);
+}
+
+@media (min-width: 768px) {
+  .post-row-meta {
+    flex-direction: column;
+  }
+}
+
+.post-row-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+/* Background underline, not a pseudo element, so it follows a title across lines. */
+.post-row-title {
+  align-self: flex-start;
+  padding-bottom: 0.18em;
+  font-size: clamp(1.5rem, 2.8vw, 2.25rem);
+  line-height: 1.08;
+  background-image: linear-gradient(var(--c-accent), var(--c-accent));
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 2px;
+  transition: background-size 0.55s var(--ease-out);
+}
+
+.post-row:hover .post-row-title,
+.post-row:focus-visible .post-row-title {
+  background-size: 100% 2px;
+}
+
+.post-row-desc {
+  max-width: 62ch;
+  color: var(--c-ink-soft);
+  text-wrap: pretty;
+}
+
+.blog-empty {
+  max-width: 44ch;
+  margin-top: clamp(3.5rem, 8vw, 6rem);
+  padding-top: 2rem;
+  border-top: 1px solid var(--c-line-strong);
+}
+
+.blog-empty p {
+  margin: 0 0 1rem;
+  font-size: 1.05rem;
+}
+
+.blog-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.5rem var(--gutter);
+  border-top: 1px solid var(--c-line);
+  font-size: 0.85rem;
+  color: var(--c-ink-soft);
+}
+
+.blog-footer a {
+  text-decoration: none;
+}
+
+.blog-footer a:hover {
+  color: var(--c-ink);
+}
+
+.reading-progress {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 40;
+  height: 2px;
+  pointer-events: none;
+}
+
+.reading-progress > span {
+  display: block;
+  height: 100%;
+  background: var(--c-accent);
+  transform-origin: left;
+}
+
+/* Article */
+.post-header {
+  max-width: 68rem;
+}
+
+.post-title {
+  max-width: 22ch;
+  margin: clamp(2.5rem, 6vw, 4rem) 0 0;
+  font-size: clamp(2.2rem, 5.4vw, 4.5rem);
+}
+
+.post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1.75rem;
+  margin: 1.75rem 0 0;
+  font-size: 0.9rem;
+  color: var(--c-ink-soft);
+}
+
+.post-layout {
+  display: grid;
+  gap: 3rem;
+  margin-top: clamp(2.5rem, 5vw, 4rem);
+  padding-top: clamp(2.5rem, 5vw, 3.5rem);
+  border-top: 1px solid var(--c-line-strong);
+}
+
+.post-toc {
+  display: none;
+}
+
+@media (min-width: 1100px) {
+  .post-layout {
+    grid-template-columns: minmax(0, 68ch) 15rem;
+    column-gap: clamp(3.5rem, 7vw, 7rem);
+  }
+
+  .post-toc {
+    display: block;
+    position: sticky;
+    top: 2rem;
+    align-self: start;
+  }
+}
+
+.post-toc p {
+  margin: 0 0 0.9rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.post-toc ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.88rem;
+  line-height: 1.4;
+}
+
+.post-toc li + li {
+  margin-top: 0.65rem;
+}
+
+.post-toc a {
+  color: var(--c-ink-soft);
+  text-decoration: none;
+}
+
+.post-toc a:hover {
+  color: var(--c-ink);
+}
+
+.post-body {
+  min-width: 0;
+  max-width: 68ch;
+  font-size: 1.0625rem;
+  line-height: 1.75;
+}
+
+.post-body > * {
+  margin-block: 0;
+}
+
+.post-body > * + * {
+  margin-top: 1.25em;
+}
+
+.post-body h2,
+.post-body h3 {
+  font-weight: 600;
+  scroll-margin-top: 1.5rem;
+  text-wrap: balance;
+}
+
+.post-body > h2 {
+  margin-top: 2.4em;
+  font-size: clamp(1.45rem, 2.4vw, 1.95rem);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  font-variation-settings: "wdth" 112;
+}
+
+.post-body > h3 {
+  margin-top: 1.9em;
+  font-size: 1.2rem;
+  line-height: 1.3;
+}
+
+.post-body p,
+.post-body li {
+  text-wrap: pretty;
+}
+
+/* Tailwind's preflight removes list markers; an article needs them back. */
+.post-body ul,
+.post-body ol {
+  padding-left: 1.3em;
+}
+
+.post-body ul {
+  list-style: disc;
+}
+
+.post-body ol {
+  list-style: decimal;
+}
+
+.post-body li + li {
+  margin-top: 0.4em;
+}
+
+.post-body li::marker {
+  color: var(--c-accent);
+}
+
+.post-body a {
+  text-decoration-color: var(--c-accent);
+  text-decoration-thickness: 1.5px;
+}
+
+.post-body blockquote {
+  margin-inline: 0;
+  padding-left: 1.25rem;
+  border-left: 2px solid var(--c-accent);
+  color: var(--c-ink-soft);
+}
+
+.post-body hr {
+  border: 0;
+  border-top: 1px solid var(--c-line);
+}
+
+.post-body img {
+  max-width: 100%;
+  height: auto;
+}
+
+.post-body code,
+.post-body pre {
+  font-family: ui-monospace, "SFMono-Regular", "Cascadia Code", Menlo, Consolas, monospace;
+}
+
+.post-body :not(pre) > code {
+  padding: 0.1em 0.35em;
+  font-size: 0.88em;
+  background: var(--c-surface);
+}
+
+/* Code sits in the dark of the room the journey starts in. */
+.post-body figure[data-rehype-pretty-code-figure] {
+  margin-inline: 0;
+}
+
+.post-body [data-rehype-pretty-code-title] {
+  padding: 0.55rem 1.25rem;
+  font-family: ui-monospace, "SFMono-Regular", "Cascadia Code", Menlo, Consolas, monospace;
+  font-size: 0.8rem;
+  color: #a9b1bb;
+  background: #161b22;
+}
+
+.post-body pre {
+  margin: 0;
+  padding: 1.1rem 1.25rem;
+  overflow-x: auto;
+  font-size: 0.9rem;
+  line-height: 1.65;
+  color: #e6edf3;
+  background: #0d1117;
+}
+
+.post-body pre code {
+  padding: 0;
+  font-size: inherit;
+  background: none;
+}
+
+.post-table {
+  overflow-x: auto;
+}
+
+.post-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.post-table th,
+.post-table td {
+  padding: 0.6rem 1rem 0.6rem 0;
+  text-align: left;
+  vertical-align: top;
+}
+
+.post-table thead th {
+  font-weight: 600;
+  border-bottom: 1px solid var(--c-line-strong);
+}
+
+.post-table tbody tr + tr td {
+  border-top: 1px solid var(--c-line);
+}
+
+.post-end {
+  max-width: 68ch;
+  margin-top: clamp(3.5rem, 7vw, 5rem);
+}
+
+.post-pillar {
+  padding: 1.25rem 1.5rem;
+  border-left: 2px solid var(--c-accent);
+  background: var(--c-surface);
+}
+
+.post-pillar p {
+  margin: 0 0 0.35rem;
+  font-size: 0.85rem;
+  color: var(--c-ink-soft);
+}
+
+.post-pillar a {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.post-contact {
+  margin-top: clamp(2.5rem, 5vw, 3.5rem);
+  padding-top: 2rem;
+  border-top: 1px solid var(--c-line-strong);
+}
+
+.post-contact h2 {
+  margin: 0;
+  font-size: clamp(1.5rem, 2.8vw, 2.1rem);
+}
+
+.post-contact p {
+  margin: 0.85rem 0 1.5rem;
+  color: var(--c-ink-soft);
+}
+
+.accent-button {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.95rem;
+  color: var(--c-accent-ink);
+  text-decoration: none;
+  background: var(--c-accent);
+  transition: transform 0.15s var(--ease-out);
+}
+
+.accent-button:active {
+  transform: translateY(1px);
+}
+
+.post-back {
+  display: inline-block;
+  margin-top: 2.5rem;
+  font-size: 0.95rem;
+}

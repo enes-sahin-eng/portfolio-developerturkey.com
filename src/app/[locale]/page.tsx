@@ -2,6 +2,8 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { isLocale, site, whatsappUrl } from "@/lib/site";
 import { getContent } from "@/lib/content";
+import { blogPath, postsFor } from "@/lib/blog";
+import { buildGraph } from "@/lib/schema";
 import { LanguageSwitch } from "@/components/LanguageSwitch";
 import { WhatsAppButton, WhatsAppIcon } from "@/components/WhatsAppButton";
 import { JourneyMount } from "@/components/world/JourneyMount";
@@ -30,6 +32,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
 
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(buildGraph(locale)) }} />
       <a
         href={`#${about.id}`}
         className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:px-3 focus:py-2"
@@ -49,7 +52,17 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
 
       <CopyLayer name={site.person.name} chapters={chapters} navLabel={c.a11y.chapterNav} />
 
-      <header className="fixed top-0 right-0 z-30 p-[max(0.75rem,calc(var(--gutter)/3))]">
+      <header className="fixed top-0 right-0 z-30 flex items-center gap-2 p-[max(0.75rem,calc(var(--gutter)/3))]">
+        {/* Shown once there is something to read. A plain anchor: the blog is a separate full page load. */}
+        {postsFor(locale).length > 0 && (
+          <a
+            href={blogPath(locale)}
+            className="border px-2.5 py-1 text-[0.75rem] tracking-[0.08em] no-underline"
+            style={{ borderColor: "var(--c-line-strong)", background: "var(--c-canvas)", color: "var(--c-ink)" }}
+          >
+            {c.blog.navLabel}
+          </a>
+        )}
         <LanguageSwitch locale={locale} label={c.nav.languageLabel} />
       </header>
 

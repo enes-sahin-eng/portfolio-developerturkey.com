@@ -1,11 +1,19 @@
-import { absoluteUrl, localePath, site } from "@/lib/site";
+import { absoluteUrl, locales, localePath, site } from "@/lib/site";
 import { getContent } from "@/lib/content";
+import { blogPath, postsFor } from "@/lib/blog";
 
 export const dynamic = "force-static";
 
 export function GET() {
   const tr = getContent("tr");
   const en = getContent("en");
+
+  const postLines = locales.flatMap((locale) =>
+    postsFor(locale).map(
+      (post) => `- [${post.title}](${absoluteUrl(blogPath(locale, post.slug))}) (${locale}): ${post.description}`,
+    ),
+  );
+  const blog = postLines.length ? `\n## Blog\n${postLines.join("\n")}\n` : "";
 
   const body = `# ${site.name}
 
@@ -26,7 +34,7 @@ ${en.work.projects.map((project) => `- ${project.title} (${project.kind}): ${pro
 ## What he works with
 ${en.skills.groups.map((g) => `- ${g.name}: ${g.items.join(", ")}`).join("\n")}
 - Currently learning: ${en.skills.learning.join(", ")}
-
+${blog}
 ## Contact
 - Email: ${site.person.email}
 - GitHub: ${site.social.github}

@@ -1,0 +1,116 @@
+2022'den beri üretimde çalışan bir e-ticaret backend'inde Prisma ve PostgreSQL kullanıyorum. Bu yazıda bir şemayı sıfırdan tasarlarken verdiğim kararları, gerçek projemden örneklerle anlatıyorum.
+
+## Neden Prisma
+
+Prisma, veritabanı şemasını tek bir dosyada (`schema.prisma`) tanımlamanı, oradan hem migration'ları hem de tip güvenli bir istemci (client) üretmeni sağlayan bir ORM. Ham SQL yazmaya göre avantajı, şemadaki bir alanı değiştirdiğinde TypeScript derleyicisinin onu kullanan her yeri anında sana göstermesi; bir ilişkiyi yanlış kurarsan bunu üretimde değil, editörde fark ediyorsun.
+
+## Modelleri ilişkilerle kurmak
+
+Bir sipariş sisteminde kullanıcı, sipariş ve sipariş kalemi arasındaki ilişki şöyle görünüyor:
+
+```prisma title="schema.prisma"
+model User {
+  id     String  @id @default(cuid())
+  email  String  @unique
+  role   Role    @default(CUSTOMER)
+  orders Order[]
+}
+
+model Order {
+  id         String      @id @default(cuid())
+  userId     String
+  user       User        @relation(fields: [userId], references: [id])
+  status     OrderStatus @default(PENDING)
+  items      OrderItem[]
+  totalCents Int
+  createdAt  DateTime    @default(now())
+
+  @@index([userId])
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String
+  quantity  Int
+  priceCents Int
+}
+
+enum Role {
+  CUSTOMER
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  SHIPPED
+  CANCELLED
+}
+```
+
+Burada birkaç kararın altını çizmek istiyorum:
+
+- **Parayı `Int` (cent cinsinden) tutuyorum, `Float` değil.** Kayan noktalı sayılar parasal hesaplamalarda yuvarlama hatası yapabiliyor; 10.10 TL gibi bir tutar `Float` ile bazen 10.099999999 olarak saklanabiliyor. Cent'e çevirip tam sayı olarak tutmak bu sınıf hatayı tamamen ortadan kaldırıyor.
+- **`OrderItem`, `Order` silinince `onDelete: Cascade` ile otomatik siliniyor**, ama `Order`, `User` silinince silinmiyor (cascade yazmadım). Bir siparişin kalemleri sipariş olmadan anlamsız, ama bir kullanıcı silinse bile sipariş geçmişinin durması gerekiyor; muhasebe ve iade süreçleri buna bağlı.
+- **`@@index([userId])`**: "kullanıcının siparişlerini getir" en sık çalışan sorgu, bu yüzden `userId` üzerinde açık bir indeks tanımlıyorum. Prisma foreign key için otomatik indeks eklemiyor, bunu elle yazman gerekiyor.
+
+## Migration akışı
+
+Şemada değişiklik yaptığımda:
+
+```bash
+npx prisma migrate dev --name add_order_status
+```
+
+Bu komut hem yeni bir SQL migration dosyası üretiyor hem de yerel veritabanına uyguluyor. Migration dosyalarını git'e commit ediyorum; production'a çıkarken `prisma migrate deploy` ile aynı dosyalar sırayla uygulanıyor. Böylece yerelde çalıştığım şema ile production'daki şema arasında hiçbir fark kalmıyor, "bende çalışıyordu" durumları migration seviyesinde ortadan kalkıyor.
+
+## N+1 sorgu tuzağı
+
+Prisma'da ilişkili veriyi çekerken en sık düştüğüm hata, döngü içinde sorgu atmak:
+
+```ts
+// Kötü: her sipariş için ayrı bir sorgu atıyor (N+1)
+const orders = await prisma.order.findMany();
+for (const order of orders) {
+  order.items = await prisma.orderItem.findMany({ where: { orderId: order.id } });
+}
+```
+
+Bunun yerine `include` ile ilişkiyi tek sorguda getiriyorum:
+
+```ts
+// İyi: tek sorguda, join ile
+const orders = await prisma.order.findMany({
+  include: { items: true },
+});
+```
+
+100 siparişlik bir listede ilki 101 sorgu atarken ikincisi tek sorgu atıyor. Küçük veri setlerinde fark görünmüyor, ama liste büyüdükçe ilk yaklaşım gerçek bir performans sorununa dönüşüyor.
+
+## Transaction ile veri bütünlüğü
+
+Bir sipariş oluştururken hem `Order` kaydı açılıyor hem stok düşülüyor. Bu iki işlemden biri başarılı olup diğeri başarısız olursa (örneğin stok yetersizse) veritabanı tutarsız bir duruma düşer. Bunu `$transaction` ile engelliyorum:
+
+```ts
+await prisma.$transaction(async (tx) => {
+  const product = await tx.product.findUniqueOrThrow({ where: { id: productId } });
+  if (product.stock < quantity) throw new Error("Stok yetersiz");
+
+  await tx.product.update({
+    where: { id: productId },
+    data: { stock: { decrement: quantity } },
+  });
+
+  await tx.order.create({
+    data: { userId, totalCents, items: { create: [{ productId, quantity, priceCents }] } },
+  });
+});
+```
+
+Transaction içindeki herhangi bir adım hata fırlatırsa, o ana kadar yapılan tüm değişiklikler geri alınıyor. Stok düşürülüp sipariş oluşturulamadan yarıda kalmış bir kayıt riski böylece ortadan kalkıyor.
+
+## Sonuç
+
+Bir Prisma şeması tasarlarken benim için önemli olan dört karar: parasal alanları tam sayı olarak tutmak, cascade kurallarını verinin gerçek yaşam döngüsüne göre seçmek, sık sorgulanan alanlara indeks eklemeyi unutmamak ve birden fazla adımı olan işlemleri transaction'a almak. Bunların hiçbiri Prisma'ya özgü değil, ama Prisma bu kararları şemada açıkça görünür kılıyor.

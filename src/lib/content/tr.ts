@@ -268,6 +268,31 @@ export const tr: Content = {
       { chapter: "iletisim", line: "Backend ve veri modelleme tarafında derinleşebileceği bir ekip arıyor." },
     ],
   },
+  blog: {
+    navLabel: "Blog",
+    title: "Node.js, Next.js ve Kariyer Yazıları",
+    description:
+      "Enes Şahin'in Node.js, Next.js, SEO ve yazılım kariyeri üzerine gerçek projelerden çıkardığı notlar. Yazıları oku, aklına takılan olursa hemen iletişime geç.",
+    heading: "Node.js, Next.js ve kariyer üzerine yazılar",
+    intro: "Gerçek projelerde karşılaştığım sorunları ve onları nasıl çözdüğümü yazıyorum.",
+    empty: {
+      line: "İlk yazı hazırlanıyor. Bu arada projelerime ana sayfadan göz atabilirsin.",
+      homeLabel: "Ana sayfaya dön",
+    },
+    breadcrumbLabel: "Sayfa yolu",
+    breadcrumbHome: "Ana sayfa",
+    published: "Yayınlandı",
+    updated: "Güncellendi",
+    readingTime: "{minutes} dk okuma",
+    toc: "Bu yazıda",
+    allPosts: "Tüm yazılar",
+    pillar: "Bu yazının parçası olduğu rehber",
+    contact: {
+      heading: "Bu konuda takıldın mı, ya da ekibine geliştirici mi arıyorsun?",
+      line: "Yazıyla ilgili sorunu ya da iş teklifini bana yaz.",
+      label: "İletişime geç",
+    },
+  },
   footer: {
     rights: "Enes Şahin · Developer Turkey",
   },

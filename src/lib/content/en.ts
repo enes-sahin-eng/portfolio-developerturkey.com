@@ -268,6 +268,31 @@ export const en: Content = {
       { chapter: "contact", line: "Looking for a team to go deeper on backend and data modeling." },
     ],
   },
+  blog: {
+    navLabel: "Blog",
+    title: "Writing on Node.js, Next.js and Careers",
+    description:
+      "Notes by Enes Şahin on Node.js, Next.js, SEO and software careers, drawn from real projects. Read the posts, and if anything is unclear, get in touch.",
+    heading: "Writing on Node.js, Next.js and careers",
+    intro: "Problems I ran into on real projects, and how I solved them.",
+    empty: {
+      line: "The first post is on its way. In the meantime, my projects are on the home page.",
+      homeLabel: "Back to the home page",
+    },
+    breadcrumbLabel: "Breadcrumb",
+    breadcrumbHome: "Home",
+    published: "Published",
+    updated: "Updated",
+    readingTime: "{minutes} min read",
+    toc: "In this post",
+    allPosts: "All posts",
+    pillar: "Part of the guide",
+    contact: {
+      heading: "Stuck on this, or hiring a developer?",
+      line: "Write to me with a question about the post or a role you have in mind.",
+      label: "Get in touch",
+    },
+  },
   footer: {
     rights: "Enes Şahin · Developer Turkey",
   },

@@ -1,0 +1,88 @@
+Bu siteyi (developerturkey.com) Next.js App Router ile Türkçe ve İngilizce olarak kurdum, aynı yapıyı 200'den fazla sayfalık üç dilli bir okul sitesinde de kullandım. Bu yazıda çok dilli bir Next.js sitesinde hreflang ve canonical'ı doğru kurmayı, kendi sitemde yaşadığım gerçek bir hatayla birlikte anlatıyorum.
+
+## URL yapısı: prefix mi, subdomain mi
+
+Çok dilli bir site için birkaç seçenek var: `tr.site.com` gibi ayrı subdomain'ler, `site.com/tr` gibi path prefix'i, ya da tarayıcı diline göre aynı URL'de farklı içerik göstermek. Son seçenek SEO için kötü, çünkü Google her dilin kendi URL'sine ihtiyaç duyar. Ben path prefix'i seçtim; subdomain kurmak DNS ve sertifika yönetimi gerektiriyor, küçük bir site için gereksiz karmaşıklık.
+
+```
+app/
+  [locale]/
+    layout.tsx
+    page.tsx
+```
+
+Kök adrese (`/`) gelen isteği tarayıcının `Accept-Language` başlığına bakarak `/tr` veya `/en`'e yönlendiriyorum:
+
+```ts title="src/proxy.ts"
+export function proxy(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+  const hasLocale = locales.some((l) => pathname === `/${l}` || pathname.startsWith(`/${l}/`));
+  if (hasLocale) return;
+
+  const locale = pickLocale(request.headers.get("accept-language"));
+  const url = request.nextUrl.clone();
+  url.pathname = `/${locale}${pathname === "/" ? "" : pathname}`;
+  return NextResponse.redirect(url);
+}
+```
+
+## hreflang: Google'a "bu sayfaların hangisi hangi dilde" demek
+
+hreflang, aynı içeriğin farklı dil sürümlerini birbirine bağlayan bir etikettir. Olmadan Google, Türkçe ve İngilizce sayfaları birbirinden habersiz iki ayrı sayfa sanır; bazen de aynı içeriğin kopyası sanıp birini gizler. Next.js'te bunu `generateMetadata` içinde `alternates.languages` ile veriyorum:
+
+```ts title="app/[locale]/layout.tsx"
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+
+  return {
+    alternates: {
+      canonical: `/${locale}`,
+      languages: {
+        tr: "/tr",
+        en: "/en",
+        "x-default": "/tr",
+      },
+    },
+  };
+}
+```
+
+Üç şeye dikkat ediyorum:
+
+- **Her dil kendi `hreflang`'ını da listeler.** TR sayfası hem `tr` hem `en` alternatifini yazar, EN sayfası da aynısını. Sadece karşı dile işaret etmek yetmiyor, Google'ın önerdiği yöntem her sayfanın kendisi dahil tüm alternatifleri listelemesi.
+- **`x-default` bir dile bağlı değildir**, hiçbir dille eşleşmeyen ziyaretçi için varsayılanı gösterir. Ben bunu Türkçe sürüme yönlendiriyorum.
+- **hreflang değeri gerçek bir sayfaya gitmeli.** Henüz çevrilmemiş bir sayfa için o dile hreflang eklemek (blog yazılarında olduğu gibi) Google'ı olmayan bir sayfaya yönlendirir.
+
+## Canonical: yayındaki gerçek adresi göstermek
+
+Canonical, bir sayfanın "asıl" adresinin hangisi olduğunu söyler. Kopya içerik ya da aynı sayfaya birden fazla yoldan ulaşılabildiği durumlarda önemli. Burada gerçekten başımı ağrıtan bir hata yaşadım.
+
+Bu siteyi Vercel'in ücretsiz planında yayınladım. Vercel varsayılan olarak apex domain'i (`developerturkey.com`) `www` sürümüne 308 ile yönlendiriyor, gerçek yayın adresi `www.developerturkey.com`. Ben ise canonical'ı, hreflang'ı, sitemap'i ve JSON-LD şemasını `developerturkey.com` (www'siz) olarak yazmıştım. Yani sitedeki her canonical etiketi, kendi kendini değil, kendisinin 308 ile yönlendiği bir adresi gösteriyordu.
+
+Google Search Console'da "robots.txt erişilemiyor" ve "site haritası okunamadı" gibi hatalar çıkınca bunu fark ettim. Düzeltmesi tek bir değişkeni değiştirmekti, çünkü site adresi kod boyunca tek bir yerden okunuyordu:
+
+```ts title="src/lib/site.ts"
+export const site = {
+  // Vercel apex'i www'ye 308 ile yönlendiriyor; site.url yayındaki gerçek adres olmalı.
+  url: "https://www.developerturkey.com",
+  // ...
+};
+```
+
+Buradan çıkardığım ders: **canonical, hreflang ve sitemap'teki adres, bir yönlendirmenin hedefi olmalı, kaynağı değil.** Hosting sağlayıcın apex'i www'ye (ya da tam tersi) yönlendiriyorsa, kod tarafında da aynı kararı vermen gerekiyor. Bunu kontrol etmenin basit yolu: canonical URL'ine `curl -I` ile istek at, 200 dönmesi lazım; 30x dönüyorsa canonical yanlış adresi gösteriyor demektir.
+
+## Dil değiştirici (language switcher)
+
+Kullanıcı dil değiştirdiğinde aynı sayfanın diğer dildeki karşılığına gitmesi gerekiyor, ana sayfaya değil. `hrefLang` özniteliğini de ekliyorum; bu, ekran okuyuculara ve tarayıcılara linkin hangi dile gittiğini söylüyor:
+
+```tsx title="src/components/LanguageSwitch.tsx"
+{locales.map((value) => (
+  <Link key={value} href={localePath(value)} hrefLang={value}>
+    {labels[value]}
+  </Link>
+))}
+```
+
+## Sonuç
+
+Çok dilli bir Next.js sitesinde SEO açısından üç şeyi doğru kurmak gerekiyor: her sayfanın kendi self-referencing canonical'ı, her dilin birbirini işaret eden hreflang'ı ve `x-default`. Ama bunların hepsi doğru olsa bile, tek bir yanlış temel adres (benim www hatam gibi) hepsini geçersiz kılabiliyor. Siteyi yayına aldıktan sonra ilk iş, canonical'ın gerçekten 200 döndüğünü kontrol etmek.

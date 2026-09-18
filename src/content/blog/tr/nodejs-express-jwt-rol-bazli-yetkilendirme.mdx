@@ -1,15 +1,15 @@
-2022'den beri Node.js ve Express ile geliştirdiğim bir e-ticaret backend'inde kimlik doğrulamayı JWT ile, yetkilendirmeyi de rol bazlı bir ara katmanla (middleware) çözüyorum. Bu yazıda bu kurulumu, üzerinde çalıştığım gerçek projeden çıkardığım kararlarla birlikte anlatıyorum.
+Ben Enes Şahin, full stack web geliştiriciyim. 2022'den beri Node.js ve Express ile geliştirdiğim bir e-ticaret backend'inde JWT ile kimlik doğrulama ve rol bazlı yetkilendirme kullanıyorum. Bu yazıda bu yaklaşımın temel parçalarını, sık yapılan hatalarla birlikte örnek kodla anlatıyorum.
 
 ## JWT nasıl çalışır, kısaca
 
 JSON Web Token, sunucunun imzaladığı ve içine kullanıcı hakkında bilgi (id, rol gibi) gömdüğü bir metin parçasıdır. Kullanıcı giriş yaptığında sunucu bu token'ı üretir, istemci de sonraki her istekte `Authorization` başlığında geri gönderir. Sunucu token'ın imzasını doğrular ve içindeki bilgiye güvenir; her istekte veritabanına gidip oturum kontrol etmesine gerek kalmaz.
 
-Burada iki token kullanıyorum:
+Örnekte iki token kullanıyorum:
 
-- **Access token**: kısa ömürlü (benim projemde 15 dakika), her API isteğinde gönderilir.
+- **Access token**: kısa ömürlü (örneğin 15 dakika), her API isteğinde gönderilir.
 - **Refresh token**: uzun ömürlü, sadece yeni bir access token almak için kullanılır ve `httpOnly` cookie'de saklanır.
 
-Access token'ı `localStorage`'da değil, bellekte (in-memory) tutuyorum. `localStorage` JavaScript'ten okunabildiği için bir XSS açığı doğrudan token çalınmasına dönüşür; sayfa yenilendiğinde de zaten refresh token'la yeni bir access token alınıyor.
+Access token'ı `localStorage`'da değil, bellekte (in-memory) tutmayı öneriyorum. `localStorage` JavaScript'ten okunabildiği için bir XSS açığı doğrudan token çalınmasına dönüşür; sayfa yenilendiğinde de zaten refresh token'la yeni bir access token alınıyor.
 
 ## Token üretimi
 
@@ -27,7 +27,7 @@ export function signRefreshToken(payload: Payload) {
 }
 ```
 
-Access ve refresh token için ayrı gizli anahtar (secret) kullanıyorum. Biri sızarsa diğerini iptal etmeden değiştirebiliyorum, iki token da aynı anahtara bağlı olmuyor.
+Access ve refresh token için ayrı gizli anahtar (secret) kullanmak iyi bir pratik. Biri sızarsa diğerini etkilemeden değiştirebilirsin, iki token da aynı anahtara bağlı olmaz.
 
 ## Kimlik doğrulama ara katmanı
 
@@ -55,7 +55,7 @@ export function authenticate(req: AuthedRequest, res: Response, next: NextFuncti
 
 ## Rol bazlı yetkilendirme
 
-Kimlik doğrulama "bu kullanıcı kim" sorusuna cevap veriyor, yetkilendirme ise "bu kullanıcı bunu yapabilir mi" sorusuna. İkisini ayrı ara katmanlarda tutuyorum, çünkü aynı endpoint'e farklı rollerin farklı erişimi olabiliyor:
+Kimlik doğrulama "bu kullanıcı kim" sorusuna cevap veriyor, yetkilendirme ise "bu kullanıcı bunu yapabilir mi" sorusuna. İkisini ayrı ara katmanlarda tutmak işe yarıyor, çünkü aynı endpoint'e farklı rollerin farklı erişimi olabiliyor:
 
 ```ts title="src/middleware/requireRole.ts"
 import type { Response, NextFunction } from "express";
@@ -99,7 +99,7 @@ Bu satırı atlamak, `requireRole("customer")` geçen herhangi bir müşterinin 
 
 ## Refresh token'ı iptal edebilmek
 
-Access token'lar kısa ömürlü olduğu için imzalandıktan sonra iptal edilemez, süresinin dolmasını beklemek gerekir. Refresh token'lar için durum farklı: kullanıcı çıkış yaptığında ya da şifresini değiştirdiğinde o token'ın artık geçersiz olmasını istiyorum. Bunun için refresh token'ların hash'ini veritabanında tutuyorum, gelen token bu tabloda yoksa reddediyorum. Token'ın kendisini değil hash'ini saklamak, veritabanı sızsa bile token'ların doğrudan kullanılabilir olmasını engelliyor.
+Access token'lar kısa ömürlü olduğu için imzalandıktan sonra iptal edilemez, süresinin dolmasını beklemek gerekir. Refresh token'lar için durum farklı: kullanıcı çıkış yaptığında ya da şifresini değiştirdiğinde o token'ın artık geçersiz olması gerekir. Bunun için refresh token'ların hash'ini veritabanında tutup, gelen token bu tabloda yoksa reddetmek yaygın bir yöntem. Token'ın kendisini değil hash'ini saklamak, veritabanı sızsa bile token'ların doğrudan kullanılabilir olmasını engelliyor.
 
 ## Sonuç
 

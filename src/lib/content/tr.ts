@@ -285,6 +285,11 @@ export const tr: Content = {
     updated: "Güncellendi",
     readingTime: "{minutes} dk okuma",
     toc: "Bu yazıda",
+    faqHeading: "Sık sorulan sorular",
+    by: "Yazan",
+    authorBio:
+      "İstanbul'da full stack web geliştirici. Node.js, Next.js ve PostgreSQL ile ölçeklenebilir web uygulamaları geliştiriyor, yazılım mühendisliği son sınıf öğrencisi.",
+    authorLabel: "Yazar",
     allPosts: "Tüm yazılar",
     pillar: "Bu yazının parçası olduğu rehber",
     contact: {

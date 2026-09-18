@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { htmlLang, isLocale, locales, localePath } from "@/lib/site";
+import { htmlLang, isLocale, locales, localePath, site } from "@/lib/site";
 import { getContent } from "@/lib/content";
 import { blogPath, findByKey, findPost, languageAlternates, posts, readPostSource, translations } from "@/lib/blog";
 import { buildPostGraph } from "@/lib/schema";
@@ -51,7 +51,10 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
   const { locale } = post;
   const c = getContent(locale);
   const { default: Body } = await post.load();
-  const { minutes, headings } = readPostSource(post);
+  const source = readPostSource(post);
+  const { minutes } = source;
+  const faqId = "sik-sorulan-sorular";
+  const headings = post.faq?.length ? [...source.headings, { id: faqId, text: c.blog.faqHeading }] : source.headings;
   const date = new Intl.DateTimeFormat(htmlLang[locale], { dateStyle: "long", timeZone: "UTC" });
   const pillar = post.pillar ? findByKey(locale, post.pillar) : undefined;
   const contactId = c.nav.chapters[c.nav.chapters.length - 1].id;
@@ -81,6 +84,9 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
             <h1 className="display post-title">{post.title}</h1>
             <p className="post-meta tabular">
               <span>
+                {c.blog.by} <a href={localePath(locale)}>{site.person.name}</a>
+              </span>
+              <span>
                 {c.blog.published} <time dateTime={post.publishedAt}>{date.format(new Date(post.publishedAt))}</time>
               </span>
               {post.updatedAt !== post.publishedAt && (
@@ -95,6 +101,17 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
           <div className="post-layout">
             <div className="post-body">
               <Body />
+              {post.faq?.length ? (
+                <>
+                  <h2 id={faqId}>{c.blog.faqHeading}</h2>
+                  {post.faq.map((item) => (
+                    <div key={item.q} className="post-faq-item">
+                      <h3>{item.q}</h3>
+                      <p>{item.a}</p>
+                    </div>
+                  ))}
+                </>
+              ) : null}
             </div>
 
             {headings.length >= 3 && (
@@ -121,6 +138,21 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
                 <Link href={blogPath(locale, pillar.slug)}>{pillar.title}</Link>
               </div>
             )}
+
+            <section className="post-author" aria-label={c.blog.authorLabel}>
+              <p className="post-author-name">
+                <a href={localePath(locale)}>{site.person.name}</a>
+              </p>
+              <p>{c.blog.authorBio}</p>
+              <p className="post-author-links">
+                <a href={site.social.github} target="_blank" rel="me noopener noreferrer">
+                  GitHub
+                </a>
+                <a href={site.social.linkedin} target="_blank" rel="me noopener noreferrer">
+                  LinkedIn
+                </a>
+              </p>
+            </section>
 
             <section className="post-contact" aria-labelledby="post-contact-title">
               <h2 id="post-contact-title" className="display">

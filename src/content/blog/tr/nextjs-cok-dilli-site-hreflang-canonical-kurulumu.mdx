@@ -1,4 +1,4 @@
-Bu siteyi (developerturkey.com) Next.js App Router ile Türkçe ve İngilizce olarak kurdum, aynı yapıyı 200'den fazla sayfalık üç dilli bir okul sitesinde de kullandım. Bu yazıda çok dilli bir Next.js sitesinde hreflang ve canonical'ı doğru kurmayı, kendi sitemde yaşadığım gerçek bir hatayla birlikte anlatıyorum.
+Ben Enes Şahin. Bu siteyi (developerturkey.com) Next.js App Router ile Türkçe ve İngilizce olarak kurdum. Daha önce 200'den fazla sayfalık, üç dilli bir okul sitesinde de çalıştım. Bu yazıda çok dilli bir Next.js sitesinde hreflang ve canonical'ı doğru kurmayı, kendi sitemde yaşadığım gerçek bir hatayla birlikte anlatıyorum.
 
 ## URL yapısı: prefix mi, subdomain mi
 
@@ -47,7 +47,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 }
 ```
 
-Üç şeye dikkat ediyorum:
+Üç şeye dikkat etmek gerekiyor:
 
 - **Her dil kendi `hreflang`'ını da listeler.** TR sayfası hem `tr` hem `en` alternatifini yazar, EN sayfası da aynısını. Sadece karşı dile işaret etmek yetmiyor, Google'ın önerdiği yöntem her sayfanın kendisi dahil tüm alternatifleri listelemesi.
 - **`x-default` bir dile bağlı değildir**, hiçbir dille eşleşmeyen ziyaretçi için varsayılanı gösterir. Ben bunu Türkçe sürüme yönlendiriyorum.

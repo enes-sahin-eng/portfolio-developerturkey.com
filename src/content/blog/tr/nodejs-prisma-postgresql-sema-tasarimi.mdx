@@ -1,4 +1,4 @@
-2022'den beri üretimde çalışan bir e-ticaret backend'inde Prisma ve PostgreSQL kullanıyorum. Bu yazıda bir şemayı sıfırdan tasarlarken verdiğim kararları, gerçek projemden örneklerle anlatıyorum.
+Ben Enes Şahin, 2022'den beri üretimde çalışan bir e-ticaret backend'inde Prisma ve PostgreSQL kullanıyorum. Bu yazıda bir şemayı sıfırdan tasarlarken önemli gördüğüm kararları, örnek bir sipariş şemasıyla anlatıyorum.
 
 ## Neden Prisma
 
@@ -52,23 +52,23 @@ enum OrderStatus {
 
 Burada birkaç kararın altını çizmek istiyorum:
 
-- **Parayı `Int` (cent cinsinden) tutuyorum, `Float` değil.** Kayan noktalı sayılar parasal hesaplamalarda yuvarlama hatası yapabiliyor; 10.10 TL gibi bir tutar `Float` ile bazen 10.099999999 olarak saklanabiliyor. Cent'e çevirip tam sayı olarak tutmak bu sınıf hatayı tamamen ortadan kaldırıyor.
+- **Parayı `Int` (cent cinsinden) tutmak, `Float` kullanmamak gerekir.** Kayan noktalı sayılar parasal hesaplamalarda yuvarlama hatası yapabiliyor; 10.10 TL gibi bir tutar `Float` ile bazen 10.099999999 olarak saklanabiliyor. Cent'e çevirip tam sayı olarak tutmak bu sınıf hatayı tamamen ortadan kaldırıyor.
 - **`OrderItem`, `Order` silinince `onDelete: Cascade` ile otomatik siliniyor**, ama `Order`, `User` silinince silinmiyor (cascade yazmadım). Bir siparişin kalemleri sipariş olmadan anlamsız, ama bir kullanıcı silinse bile sipariş geçmişinin durması gerekiyor; muhasebe ve iade süreçleri buna bağlı.
-- **`@@index([userId])`**: "kullanıcının siparişlerini getir" en sık çalışan sorgu, bu yüzden `userId` üzerinde açık bir indeks tanımlıyorum. Prisma foreign key için otomatik indeks eklemiyor, bunu elle yazman gerekiyor.
+- **`@@index([userId])`**: "kullanıcının siparişlerini getir" bir sipariş sisteminde en sık çalışan sorgulardan biri, bu yüzden `userId` üzerinde açık bir indeks tanımlamak mantıklı. Prisma foreign key için otomatik indeks eklemiyor, bunu elle yazman gerekiyor.
 
 ## Migration akışı
 
-Şemada değişiklik yaptığımda:
+Şemada değişiklik yaptığında:
 
 ```bash
 npx prisma migrate dev --name add_order_status
 ```
 
-Bu komut hem yeni bir SQL migration dosyası üretiyor hem de yerel veritabanına uyguluyor. Migration dosyalarını git'e commit ediyorum; production'a çıkarken `prisma migrate deploy` ile aynı dosyalar sırayla uygulanıyor. Böylece yerelde çalıştığım şema ile production'daki şema arasında hiçbir fark kalmıyor, "bende çalışıyordu" durumları migration seviyesinde ortadan kalkıyor.
+Bu komut hem yeni bir SQL migration dosyası üretiyor hem de yerel veritabanına uyguluyor. Migration dosyalarını git'e commit etmek gerekir; production'a çıkarken `prisma migrate deploy` ile aynı dosyalar sırayla uygulanıyor. Böylece yerel şema ile production'daki şema arasında fark kalmıyor, "bende çalışıyordu" durumları migration seviyesinde ortadan kalkıyor.
 
 ## N+1 sorgu tuzağı
 
-Prisma'da ilişkili veriyi çekerken en sık düştüğüm hata, döngü içinde sorgu atmak:
+Prisma'da ilişkili veriyi çekerken en sık yapılan hata, döngü içinde sorgu atmak:
 
 ```ts
 // Kötü: her sipariş için ayrı bir sorgu atıyor (N+1)
@@ -91,7 +91,7 @@ const orders = await prisma.order.findMany({
 
 ## Transaction ile veri bütünlüğü
 
-Bir sipariş oluştururken hem `Order` kaydı açılıyor hem stok düşülüyor. Bu iki işlemden biri başarılı olup diğeri başarısız olursa (örneğin stok yetersizse) veritabanı tutarsız bir duruma düşer. Bunu `$transaction` ile engelliyorum:
+Bir sipariş oluştururken hem `Order` kaydı açılıyor hem stok düşülüyor. Bu iki işlemden biri başarılı olup diğeri başarısız olursa (örneğin stok yetersizse) veritabanı tutarsız bir duruma düşer. Bunu `$transaction` ile engellemek gerekir:
 
 ```ts
 await prisma.$transaction(async (tx) => {
@@ -113,4 +113,4 @@ Transaction içindeki herhangi bir adım hata fırlatırsa, o ana kadar yapılan
 
 ## Sonuç
 
-Bir Prisma şeması tasarlarken benim için önemli olan dört karar: parasal alanları tam sayı olarak tutmak, cascade kurallarını verinin gerçek yaşam döngüsüne göre seçmek, sık sorgulanan alanlara indeks eklemeyi unutmamak ve birden fazla adımı olan işlemleri transaction'a almak. Bunların hiçbiri Prisma'ya özgü değil, ama Prisma bu kararları şemada açıkça görünür kılıyor.
+Bir Prisma şeması tasarlarken önemli gördüğüm dört karar: parasal alanları tam sayı olarak tutmak, cascade kurallarını verinin gerçek yaşam döngüsüne göre seçmek, sık sorgulanan alanlara indeks eklemeyi unutmamak ve birden fazla adımı olan işlemleri transaction'a almak. Bunların hiçbiri Prisma'ya özgü değil, ama Prisma bu kararları şemada açıkça görünür kılıyor.

@@ -88,6 +88,10 @@ export type Content = {
     /** `{minutes}` is replaced with the reading time. */
     readingTime: string;
     toc: string;
+    faqHeading: string;
+    by: string;
+    authorBio: string;
+    authorLabel: string;
     allPosts: string;
     pillar: string;
     contact: { heading: string; line: string; label: string };

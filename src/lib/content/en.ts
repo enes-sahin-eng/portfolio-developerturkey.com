@@ -285,6 +285,11 @@ export const en: Content = {
     updated: "Updated",
     readingTime: "{minutes} min read",
     toc: "In this post",
+    faqHeading: "Frequently asked questions",
+    by: "By",
+    authorBio:
+      "Full stack web developer in Istanbul. Builds scalable web apps with Node.js, Next.js and PostgreSQL, and is a final year software engineering student.",
+    authorLabel: "Author",
     allPosts: "All posts",
     pillar: "Part of the guide",
     contact: {

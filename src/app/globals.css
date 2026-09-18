@@ -840,6 +840,18 @@ html.lenis body {
   text-wrap: pretty;
 }
 
+.post-faq-item > h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  line-height: 1.35;
+  text-wrap: balance;
+}
+
+.post-faq-item > p {
+  margin: 0.5em 0 0;
+}
+
 /* Tailwind's preflight removes list markers; an article needs them back. */
 .post-body ul,
 .post-body ol {
@@ -971,6 +983,45 @@ html.lenis body {
 .post-pillar a {
   font-size: 1.1rem;
   font-weight: 600;
+}
+
+.post-author {
+  margin-top: clamp(2.5rem, 5vw, 3.5rem);
+  padding-top: 1.75rem;
+  border-top: 1px solid var(--c-line);
+}
+
+.post-author p {
+  margin: 0;
+}
+
+.post-author-name {
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.post-author-name a {
+  text-decoration: none;
+}
+
+.post-author p + p {
+  margin-top: 0.4rem;
+  color: var(--c-ink-soft);
+}
+
+.post-author-links {
+  display: flex;
+  gap: 1.25rem;
+  margin-top: 0.75rem !important;
+  font-size: 0.9rem;
+}
+
+.post-meta a {
+  text-decoration: none;
+}
+
+.post-meta a:hover {
+  color: var(--c-ink);
 }
 
 .post-contact {

@@ -119,9 +119,28 @@ export function buildPostGraph(post: Post) {
   const c = getContent(locale);
   const url = absoluteUrl(blogPath(locale, post.slug));
 
+  const faq = post.faq?.length
+    ? [
+        {
+          "@type": "FAQPage",
+          "@id": `${url}#faq`,
+          url,
+          inLanguage: htmlLang[locale],
+          isPartOf: { "@id": websiteId },
+          about: { "@id": `${url}#article` },
+          mainEntity: post.faq.map((item) => ({
+            "@type": "Question",
+            name: item.q,
+            acceptedAnswer: { "@type": "Answer", text: item.a },
+          })),
+        },
+      ]
+    : [];
+
   return graph([
     personNode(locale),
     websiteNode(locale),
+    ...faq,
     {
       "@type": "BlogPosting",
       "@id": `${url}#article`,

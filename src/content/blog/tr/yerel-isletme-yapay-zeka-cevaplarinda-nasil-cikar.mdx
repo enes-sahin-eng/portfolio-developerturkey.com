@@ -1,0 +1,75 @@
+Ben Enes Şahin. Web geliştirici olarak çalıştığım bir çanta ve aksesuar mağazasının sitesi, birkaç gün içinde ChatGPT ve Google'ın yapay zeka cevaplarında görünmeye başladı. Bu yazı bir gözlem, kanıt değil: ne gördüğümü, hangi adımları paylaşabildiğimi ve neyi bilmediğimi yazıyorum.
+
+## Yapay zeka cevaplarında ne gördüm?
+
+Aynı aramaları farklı yapay zekalarda yazdım. Değişikliklerden önce mağaza bu cevapların hiçbirinde çıkmıyordu. 19 Eylül 2026 itibarıyla durum şöyle:
+
+| Arama | Nerede | Önce | Şimdi |
+| --- | --- | --- | --- |
+| çanta aksesuarı satan işletmeler | Google, klasik sonuçlar | 3. veya 4. sayfa | İlk sayfa, 3. sıra civarı |
+| çanta aksesuarı satan işletmeler | Google, yapay zeka cevabı | Çıkmıyordu | Cevapta çıkıyor |
+| Beylikdüzünde çanta aksesuarı satan işletmeler | ChatGPT | Çıkmıyordu | En üstte çıkıyor |
+| çanta aksesuarı satan işletmeler | Claude | Çıkmıyordu | Ara sıra çıkıyor, her seferinde değil |
+| Beylikdüzünde çanta aksesuarı satan işletmeler | Claude | Çıkmıyordu | En üstte çıkıyor |
+
+İlçe adı eklenince sonuç daha sağlam: Beylikdüzü'lü aramada hem ChatGPT hem Claude işletmeyi en üstte gösteriyor, ilçesiz aramada ise Claude'da sonuç değişken.
+
+## Ne yaptım?
+
+Paylaşabildiğim adımlar şunlar:
+
+- Sitenin temel SEO ayarlarını düzelttim.
+- Google işletme profili (Business Profile) hesabını ekledim.
+- Siteye `robots.txt` ekledim.
+- Siteye `llms.txt` ekledim.
+
+Bunların son üçünü yaklaşık üç gün önce yaptım. Uyguladığım başka adımlar da var, hepsini paylaşmıyorum.
+
+`robots.txt`, arama motorlarına ve yapay zeka botlarına hangi sayfalara girebileceklerini söyleyen dosyadır. `llms.txt` ise siteyi ve önemli sayfalarını dil modellerine kısaca tanıtan, henüz resmi bir standart olmayan bir metin dosyasıdır. Bu sitenin `robots.txt` dosyasından bir örnek:
+
+```txt title="robots.txt (örnek)"
+User-Agent: *
+Allow: /
+
+User-Agent: OAI-SearchBot
+Allow: /
+
+User-Agent: ClaudeBot
+Allow: /
+
+Sitemap: https://www.developerturkey.com/sitemap.xml
+```
+
+## Bu sonuç bu adımlardan mı geldi?
+
+Bilmiyorum, ve bunu açıkça söylemek istiyorum:
+
+1. **Süre çok kısa.** Son değişikliklerin üzerinden yaklaşık üç gün geçti. Bu, bir sıralama değişikliğinin kalıcı olup olmadığını söylemek için yeterli değil.
+2. **Aynı anda birden fazla şey değiştirdim.** Hangisinin etkili olduğunu ayıramam.
+3. **Paylaşmadığım adımlar da var.** Bu tablodaki adımların tek başına yeterli olduğunu söyleyemem.
+4. **Yapay zeka cevapları değişken.** Claude'da aynı arama her seferinde çıkmıyor. Bu yüzden bir cevabı görmek, her zaman görüleceği anlamına gelmiyor.
+5. **`llms.txt` etkisi kanıtlı değil.** Büyük sağlayıcıların bu dosyayı okuduğunu doğrulayan resmi bir açıklama bildiğim kadarıyla yok, bu yüzden sonucu ona bağlamıyorum.
+6. **Yerel aramada işletme profili ağırlıklı olabilir.** İlçe adı içeren aramalarda Google işletme profilinin payı büyük olabilir. Bu bir tahmin, ölçtüğüm bir şey değil.
+
+## Kendi aramamı nasıl test ederim?
+
+Yapay zeka cevapları kişiye, konuma ve ana göre değişebildiği için tek bir denemeye güvenmemek gerekiyor:
+
+- Gizli sekmede ve hesaba giriş yapmadan dene.
+- Aynı aramayı farklı günlerde birkaç kez yaz.
+- Aramayı ilçe adıyla ve ilçe adı olmadan ayrı ayrı dene.
+- Her denemenin tarihini, aracı ve çıkan sonucu bir tabloya yaz.
+
+Ben de aynı aramaları belirli aralıklarla tekrar deneyip bu tabloyu güncelleyeceğim.
+
+## Yerel bir işletme için ne önerilir?
+
+Aşağıdakiler yaygın olarak önerilen adımlar. Hangisinin ne kadar işe yaradığını ayırt edecek verim yok:
+
+- **Yapay zeka botlarını `robots.txt`'te engellememek.** Örneğin OAI-SearchBot'u engellemek, ChatGPT'nin arama tarafında görünmeni zorlaştırabilir.
+- **İşletme adı, adres ve telefonu her yerde birebir aynı yazmak.** Site, işletme profili ve dizinlerdeki bilgi tutarlı olmalı.
+- **Google işletme profilini eksiksiz doldurmak.**
+- **İşletmeyi sitede tek cümleyle tanımlamak.** Örneğin "X, Beylikdüzü'nde çanta ve aksesuar satan bir işletmedir." Yapay zekalar bu tür net tanım cümlelerini alıntılamaya yatkın.
+- **Yapısal veri (LocalBusiness) eklemek.** Şemada yazan bilgi sayfada da görünmeli.
+- **Bing Webmaster Tools'a siteyi eklemek.** ChatGPT'nin arama tarafı Bing indeksinden de yararlanabiliyor.
+- **Başkalarının senden bahsetmesi.** Dizinler, listeler ve yerel rehberler yapay zeka cevaplarında kaynak olarak görünebiliyor.

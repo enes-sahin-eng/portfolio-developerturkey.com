@@ -1,4 +1,4 @@
-2022'den beri Node.js ve Express ile backend geliştiriyorum. Bu yıl C# ve .NET Core öğrenmeye başladım; piyasada .NET talebinin Türkiye'de ne kadar yaygın olduğunu görünce bu tarafa ağırlık vermeye karar verdim. Bu yazıda henüz bu yolun başındayken, Node.js'ten gelen birinin gözünden neyin tanıdık, neyin farklı geldiğini anlatıyorum. Bir karşılaştırma rehberi değil, bir öğrenme günlüğü.
+Ben Enes Şahin, 2022'den beri Node.js ve Express ile backend geliştiriyorum. Bu yıl C# ve .NET Core öğrenmeye başladım; piyasada .NET talebinin Türkiye'de ne kadar yaygın olduğunu görünce bu tarafa ağırlık vermeye karar verdim. Bu yazıda henüz bu yolun başındayken, Node.js'ten gelen birinin gözünden iki ekosistemin nerede benzeştiğini ve nerede ayrıldığını anlatıyorum. Bir karşılaştırma rehberi değil, bir öğrenme notu.
 
 ## Tanıdık gelen: katmanlı mimari
 
@@ -35,11 +35,11 @@ Node'da dependency injection istersen kendi elinle kuruyorsun (ya da hiç kurmuy
 builder.Services.AddScoped<IOrderService, OrderService>();
 ```
 
-Bunun faydasını test yazarken görüyorum: `OrderService`'i test ederken gerçek bir repository yerine sahte (mock) bir tane veriyorum, kontrolörün kendisi hiç değişmiyor. Node'da aynı şeyi yapmak için ya bir DI kütüphanesi (Awilix, InversifyJS gibi) kurman ya da kendi enjeksiyon mekanizmanı yazman gerekiyor.
+Bunun faydası testte ortaya çıkıyor: `OrderService`'i test ederken gerçek bir repository yerine sahte (mock) bir tane verebiliyorsun, kontrolörün kendisi değişmiyor. Node'da aynı şeyi yapmak için ya bir DI kütüphanesi (Awilix, InversifyJS gibi) kurman ya da kendi enjeksiyon mekanizmanı yazman gerekiyor.
 
 ## Farklı gelen: derleme zamanı hataları
 
-TypeScript kullansam bile Node'da bazı hatalar sadece çalışma zamanında (runtime) ortaya çıkıyor, özellikle `any` tipiyle gevşetilmiş yerlerde. C#'ta tip sistemi daha katı ve derleme zamanında (compile time) çok daha fazla şeyi yakalıyor: yanlış tipte bir parametre, null olabilecek bir referansı kontrol etmeden kullanmak gibi hatalar kod çalışmadan önce derleyicide patlıyor. Başta bunu yavaşlatıcı buldum, "neden bu kadar çok kural var" dedim, ama artık derleyicinin bulduğu her hatanın production'da bulmayacağım bir hata olduğunu düşünüyorum.
+TypeScript kullanılsa bile Node'da bazı hatalar sadece çalışma zamanında (runtime) ortaya çıkıyor, özellikle `any` tipiyle gevşetilmiş yerlerde. C#'ta tip sistemi daha katı ve derleme zamanında (compile time) çok daha fazla şeyi yakalıyor: yanlış tipte bir parametre, null olabilecek bir referansı kontrol etmeden kullanmak gibi hatalar kod çalışmadan önce derleyicide patlıyor. Derleyicinin yakaladığı her hata, production'a hiç ulaşmayan bir hata demek.
 
 ## Tanıdık gelen: ORM mantığı
 
@@ -59,8 +59,8 @@ Prisma'daki `schema.prisma` dosyasının yaptığını burada C# sınıfları ü
 
 ## Henüz netleşmeyen: hangi işlerde .NET tercih ediliyor
 
-Bu kısımda dürüst olmak istiyorum: henüz bu yolun başındayım, Commencis'in ücretsiz mentorluklu bootcamp'ine katılıyorum ve gerçek bir .NET projesini üretime çıkarmadım. Node.js tarafında üç yıla yakın üretim deneyimim var, .NET tarafında ise haftalar var. Bu yazıda "hangisi daha iyi" gibi bir sonuca varmıyorum çünkü henüz böyle bir karşılaştırma yapacak deneyimim yok; sadece geçiş sürecinde neyin kolay, neyin zor geldiğini paylaşıyorum.
+Bu kısımda dürüst olmak istiyorum: henüz bu yolun başındayım, Commencis'in ücretsiz mentorluklu bootcamp'ine katılıyorum ve gerçek bir .NET projesini üretime çıkarmadım. Node.js tarafında dört yılı aşkın üretim deneyimim var, .NET tarafında ise henüz başındayım. Bu yazıda "hangisi daha iyi" gibi bir sonuca varmıyorum çünkü böyle bir karşılaştırma yapacak deneyimim yok; sadece iki ekosistemin nerede benzeştiğini ve nerede ayrıldığını, öğrenirken gördüğüm kadarıyla anlatıyorum.
 
 ## Sonuç
 
-Node'dan .NET Core'a geçerken en çok zorlandığım yer C#'ın tip sistemine alışmak oldu, en tanıdık gelen yer ise katmanlı mimari ve ORM kullanım şekliydi. Bu geçiş sürecini ilerledikçe burada güncellemeye devam edeceğim.
+Node'dan .NET Core'a geçerken katmanlı mimari ve ORM mantığı tanıdık, dependency injection ve daha katı tip sistemi ise farklı bir çalışma şekli getiriyor. Öğrendikçe bu yazıyı kendi gerçek deneyimimle güncelleyeceğim.

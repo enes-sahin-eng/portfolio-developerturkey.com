@@ -19,6 +19,12 @@ export type Post = {
   updatedAt: string;
   /** `key` of the guide this post supports. The post links to it. */
   pillar?: string;
+  /**
+   * Shown at the end of the post and emitted as FAQPage schema from this same
+   * list, so the schema can never claim more than the page shows. Plain text
+   * only: no markdown, no HTML. Each answer must be something the post says.
+   */
+  faq?: { q: string; a: string }[];
   load: () => Promise<{ default: MDXContent }>;
 };
 
@@ -45,9 +51,27 @@ export const posts: Post[] = [
     slug: "nodejs-express-jwt-rol-bazli-yetkilendirme",
     title: "Node.js ve Express ile JWT ve Rol Bazlı Yetkilendirme",
     description:
-      "Express ve JWT ile kimlik doğrulama ve rol bazlı yetkilendirmeyi gerçek bir projeden kod örnekleriyle anlatıyorum. Sahiplik kontrolü dahil. Hemen oku!",
+      "Express ve JWT ile kimlik doğrulama ve rol bazlı yetkilendirmeyi kod örnekleriyle, sık yapılan sahiplik kontrolü hatasıyla birlikte anlatıyorum. Hemen oku!",
     publishedAt: "2026-09-16",
-    updatedAt: "2026-09-16",
+    updatedAt: "2026-09-19",
+    faq: [
+      {
+        q: "JWT nedir ve Express'te nasıl kullanılır?",
+        a: "JWT, sunucunun imzaladığı ve içine kullanıcı id'si ile rol gibi bilgileri gömdüğü bir metindir. Kullanıcı giriş yapınca sunucu token üretir, istemci her istekte Authorization başlığında gönderir ve Express'te bir ara katman (middleware) imzayı doğrular.",
+      },
+      {
+        q: "Access token ile refresh token arasındaki fark nedir?",
+        a: "Access token kısa ömürlüdür (örneğin 15 dakika) ve her API isteğinde gönderilir. Refresh token uzun ömürlüdür ve yalnızca yeni bir access token almak için kullanılır; httpOnly cookie'de saklanması önerilir.",
+      },
+      {
+        q: "JWT token localStorage'da saklanmalı mı?",
+        a: "Önerilmez. localStorage JavaScript ile okunabildiği için bir XSS açığı token'ın çalınmasına yol açar. Access token'ı bellekte, refresh token'ı httpOnly cookie'de tutmak daha güvenlidir.",
+      },
+      {
+        q: "Rol kontrolü yetmiyor mu, sahiplik kontrolü neden gerekir?",
+        a: "Rol kontrolü kullanıcının müşteri ya da admin olduğuna bakar, ama bir kaydın o kullanıcıya ait olup olmadığını denetlemez. Sahiplik kontrolü yoksa giriş yapmış herhangi bir müşteri URL'deki id'yi değiştirerek başkasının siparişini görebilir.",
+      },
+    ],
     load: () => import("@/content/blog/tr/nodejs-express-jwt-rol-bazli-yetkilendirme.mdx"),
   },
   {
@@ -58,7 +82,25 @@ export const posts: Post[] = [
     description:
       "Next.js App Router'da TR/EN site kurulumunu, hreflang ve canonical hatalarını kendi www yönlendirme hatamdan yola çıkarak anlatıyorum. Hemen şimdi oku!",
     publishedAt: "2026-09-16",
-    updatedAt: "2026-09-16",
+    updatedAt: "2026-09-19",
+    faq: [
+      {
+        q: "hreflang nedir, neden gerekir?",
+        a: "hreflang, aynı içeriğin farklı dil sürümlerini birbirine bağlayan bir etikettir. Olmadan Google dil sürümlerini birbirinden habersiz ayrı sayfalar sayabilir, hatta birini kopya sanıp gizleyebilir.",
+      },
+      {
+        q: "Next.js App Router'da hreflang nasıl eklenir?",
+        a: "generateMetadata içinde alternates.languages alanına her dilin yolunu ve x-default değerini yazarak. Her dil sayfası kendisi dahil tüm alternatifleri listelemelidir.",
+      },
+      {
+        q: "x-default ne işe yarar?",
+        a: "x-default, hiçbir dille eşleşmeyen ziyaretçi için varsayılan sayfayı belirtir. Bu sitede varsayılan olarak Türkçe sürüme işaret eder.",
+      },
+      {
+        q: "Canonical hangi adresi göstermeli?",
+        a: "Sitenin yönlendirme yapmayan, yayındaki gerçek adresini. Hosting apex adresi www'ye yönlendiriyorsa canonical, hreflang ve sitemap www'li adresi kullanmalıdır. Canonical adresine curl -I ile istek attığında 200 dönmelidir.",
+      },
+    ],
     load: () => import("@/content/blog/tr/nextjs-cok-dilli-site-hreflang-canonical-kurulumu.mdx"),
   },
   {
@@ -67,9 +109,27 @@ export const posts: Post[] = [
     slug: "nodejs-prisma-postgresql-sema-tasarimi",
     title: "Node.js Projesinde Prisma ve PostgreSQL ile Şema Tasarımı",
     description:
-      "Prisma ve PostgreSQL ile ilişkili bir veritabanı şemasını gerçek bir e-ticaret projesinden örneklerle, migration ve transaction dahil anlatıyorum. Oku!",
+      "Prisma ve PostgreSQL ile ilişkili bir veritabanı şemasını örnek bir e-ticaret şemasıyla, migration, indeks ve transaction dahil anlatıyorum. Hemen oku!",
     publishedAt: "2026-09-16",
-    updatedAt: "2026-09-16",
+    updatedAt: "2026-09-19",
+    faq: [
+      {
+        q: "Parayı veritabanında neden Float yerine Int tutmalıyım?",
+        a: "Kayan noktalı sayılar yuvarlama hatası yapabilir; 10.10 gibi bir tutar 10.099999999 olarak saklanabilir. Tutarı kuruş (cent) cinsinden tam sayı tutmak bu hatayı ortadan kaldırır.",
+      },
+      {
+        q: "Prisma foreign key için otomatik indeks oluşturur mu?",
+        a: "Hayır, Prisma foreign key alanları için otomatik indeks eklemez. Sık sorguladığın alanlara @@index ile elle indeks tanımlaman gerekir.",
+      },
+      {
+        q: "Prisma'da N+1 sorgu problemi nedir?",
+        a: "Döngü içinde her kayıt için ayrı sorgu atmaktır; 100 kayıt için 101 sorgu çalışır. include ile ilişkili veriyi tek sorguda getirerek önlenir.",
+      },
+      {
+        q: "Prisma'da $transaction ne zaman kullanılır?",
+        a: "Birden fazla adımı olan ve biri başarısız olursa hepsinin geri alınması gereken işlemlerde, örneğin sipariş oluştururken stok düşmek gibi. Adımlardan biri hata verirse o ana kadar yapılan değişiklikler geri alınır.",
+      },
+    ],
     load: () => import("@/content/blog/tr/nodejs-prisma-postgresql-sema-tasarimi.mdx"),
   },
   {
@@ -80,7 +140,25 @@ export const posts: Post[] = [
     description:
       "Hangi projeler portfolyoya girmeli, müşteri işleri nasıl gösterilmeli, GitHub nasıl düzenlenmeli? Kendi portfolyomdan gerçek kararlarla anlatıyorum. Oku!",
     publishedAt: "2026-09-16",
-    updatedAt: "2026-09-16",
+    updatedAt: "2026-09-19",
+    faq: [
+      {
+        q: "Junior yazılımcı portfolyosunda hangi projeler olmalı?",
+        a: "Sayıdan çok her projenin neyi gösterdiği önemlidir: gerçek bir sorunu çözen, bir mimari kararı savunabildiğin ve bitmiş, çalışan projeler. Az sayıda güçlü proje, çok sayıda zayıf projeden daha iyi bir izlenim bırakır.",
+      },
+      {
+        q: "Müşteri projelerini portfolyoda gösterirken nelere dikkat edilmeli?",
+        a: "Kurum adı yalnızca izin varsa yazılmalı, izin yoksa genel bir tanım kullanılmalıdır. Ekran görüntüsünde gerçek müşteri verisi olmamalı, test hesabı ve örnek veri kullanılmalıdır.",
+      },
+      {
+        q: "GitHub profilinde nelere dikkat edilmeli?",
+        a: "README'nin ilk cümlesi projenin ne yaptığını söylemeli, commit geçmişi gerçek bir gelişim sürecini göstermeli ve sabitlenen repolar rastgele değil, en çok şey anlatanlar arasından seçilmeli.",
+      },
+      {
+        q: "Çalışmayan bir projeyi portfolyoya koymalı mıyım?",
+        a: "Canlıda çalışmayan bir demo linki koymak yerine ekran görüntüsü ve mimari açıklamasıyla göstermek daha iyidir. Çalışmayan bir link yarım kalmış bir izlenim bırakır.",
+      },
+    ],
     load: () => import("@/content/blog/tr/junior-yazilimci-portfolyosu-nasil-hazirlanir.mdx"),
   },
   {
@@ -89,10 +167,57 @@ export const posts: Post[] = [
     slug: "nodejs-gelistiricisinin-gozunden-dotnet-core-gecis",
     title: "Bir Node.js Geliştiricisinin Gözünden .NET Core'a Geçiş",
     description:
-      "Node.js'ten C# ve .NET Core'a geçerken neyin tanıdık, neyin zor geldiğini dürüstçe anlatıyorum. Bir rehber değil, gerçek bir öğrenme günlüğü. Şimdi oku!",
+      "Node.js'ten C# ve .NET Core'a geçerken iki ekosistemin nerede benzeştiğini ve nerede ayrıldığını anlatıyorum. Bir rehber değil, öğrenme notu. Hemen oku!",
     publishedAt: "2026-09-16",
-    updatedAt: "2026-09-16",
+    updatedAt: "2026-09-19",
+    faq: [
+      {
+        q: "Node.js bilen biri için .NET Core'a geçiş zor mu?",
+        a: "Katmanlı mimari ve ORM mantığı tanıdık gelir; dependency injection ve daha katı tip sistemi ise farklı bir çalışma şekli getirir. Bu yazı bir öğrenme notudur, kesin bir zorluk derecesi vermez.",
+      },
+      {
+        q: "ASP.NET Core'da dependency injection nasıl çalışır?",
+        a: "Dependency injection framework'ün bir parçasıdır. Controller'ın constructor'ına arayüzü (örneğin IOrderService) yazarsın, hangi sınıfın enjekte edileceğini Program.cs içinde builder.Services.AddScoped ile bir kere tanımlarsın.",
+      },
+      {
+        q: "Prisma ile Entity Framework Core arasındaki fark nedir?",
+        a: "Kavramsal olarak aynı işi yaparlar: modeli kodda tanımlar, migration üretir ve ilişkili veriyi tek sorguda getirirler. Fark sözdizimindedir; Prisma bir schema.prisma dosyası kullanırken EF Core C# sınıflarını ve DbContext yapılandırmasını kullanır.",
+      },
+      {
+        q: "C# ile TypeScript'in tip sistemi arasındaki fark nedir?",
+        a: "TypeScript'te any gibi gevşetmeler bazı hataların çalışma zamanına kalmasına neden olabilir. C# daha katıdır ve yanlış tipli parametre ya da null kontrolü yapılmamış referans gibi hataları derleme zamanında yakalar.",
+      },
+    ],
     load: () => import("@/content/blog/tr/nodejs-gelistiricisinin-gozunden-dotnet-core-gecis.mdx"),
+  },
+  {
+    key: "local-ai-visibility",
+    locale: "tr",
+    slug: "yerel-isletme-yapay-zeka-cevaplarinda-nasil-cikar",
+    title: "Yerel Bir İşletme Yapay Zeka Cevaplarında Nasıl Çıkar?",
+    description:
+      "Bir çanta mağazasının sitesi ChatGPT ve Google AI cevaplarında çıkmaya başladı. Ne gözlemlediğimi, neyi bilmediğimi ve önerdiklerimi anlatıyorum. Oku!",
+    publishedAt: "2026-09-19",
+    updatedAt: "2026-09-19",
+    faq: [
+      {
+        q: "Yapay zeka cevaplarında çıkmak için ne yapılır?",
+        a: "Kesin bir yöntem yok. Yaygın olarak önerilenler: yapay zeka botlarını robots.txt'te engellememek, Google işletme profilini eksiksiz doldurmak, işletme bilgilerini her yerde aynı yazmak, siteyi net bir cümleyle tanımlamak ve yapısal veri eklemek. Bu yazıdaki gözlem yalnızca üç günlüktür.",
+      },
+      {
+        q: "llms.txt yapay zekada çıkmayı sağlar mı?",
+        a: "Kanıtlı değil. llms.txt resmi bir standart değil ve büyük sağlayıcıların okuduğunu doğrulayan resmi bir açıklama bilinmiyor. Eklemenin maliyeti düşüktür ama tek başına bir strateji sayılmaz.",
+      },
+      {
+        q: "ChatGPT her seferinde aynı sonucu gösterir mi?",
+        a: "Hayır. Yapay zeka cevapları aynı soruda bile değişebilir, örneğin Claude'da aynı arama her seferinde çıkmadı. Bu yüzden aramayı gizli sekmede, farklı günlerde birkaç kez denemek ve sonucu tarihiyle kaydetmek gerekir.",
+      },
+      {
+        q: "Robots.txt'te yapay zeka botlarına izin vermek gerekli mi?",
+        a: "Bu botları engellemek, ilgili ürünlerde görünmeni zorlaştırabilir. Örneğin OAI-SearchBot ChatGPT'nin arama tarafında kullanılır. Google-Extended ise yalnızca Gemini'nin içeriği kullanmasını kontrol eder, Google'ın yapay zeka özetlerini etkilemez.",
+      },
+    ],
+    load: () => import("@/content/blog/tr/yerel-isletme-yapay-zeka-cevaplarinda-nasil-cikar.mdx"),
   },
 ];
 

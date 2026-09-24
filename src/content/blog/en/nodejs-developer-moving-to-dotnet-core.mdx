@@ -1,0 +1,66 @@
+I'm Enes Şahin, and I have been building backends with Node.js and Express since 2022. This year I started learning C# and .NET Core; after seeing how widespread the demand for .NET is in Türkiye, I decided to put more weight on it. While I'm still at the start of this path, this post describes where the two ecosystems are alike and where they differ, through the eyes of someone coming from Node.js. It isn't a comparison guide; it's a learning note.
+
+## Familiar: the layered architecture
+
+In Node/Express you set up a layering like route → controller → service → repository by hand; it's a habit, not a library. In ASP.NET Core this separation comes more built into the framework as Controller-Service-Repository, but the logic is the same: the layer that receives the HTTP request, the layer that runs the business rules and the layer that talks to the database are kept apart.
+
+```csharp title="Controllers/OrdersController.cs"
+[ApiController]
+[Route("api/[controller]")]
+public class OrdersController : ControllerBase
+{
+    private readonly IOrderService _orderService;
+
+    public OrdersController(IOrderService orderService)
+    {
+        _orderService = orderService;
+    }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetOrder(string id)
+    {
+        var order = await _orderService.GetByIdAsync(id);
+        return order is null ? NotFound() : Ok(order);
+    }
+}
+```
+
+It reads almost exactly like a route handler in Express: a request comes in, it's handed to a service, a response goes out.
+
+## Different: dependency injection is there from the start
+
+In Node, if you want dependency injection you set it up yourself (or don't set it up at all and import directly with `require`). In ASP.NET Core, DI is part of the framework; in the `OrdersController` example above, writing `IOrderService` in the constructor is enough, and you define once in `Program.cs` which concrete class gets injected:
+
+```csharp title="Program.cs"
+builder.Services.AddScoped<IOrderService, OrderService>();
+```
+
+The benefit shows up in testing: when testing `OrderService`, you can pass a fake (mock) repository instead of the real one, and the controller itself doesn't change. To do the same in Node, you either install a DI library (such as Awilix or InversifyJS) or write your own injection mechanism.
+
+## Different: compile-time errors
+
+Even with TypeScript, some errors in Node only surface at runtime, especially in places loosened with the `any` type. C#'s type system is stricter and catches much more at compile time: errors like passing a parameter of the wrong type or using a possibly-null reference without checking it blow up in the compiler before the code runs. Every error the compiler catches is an error that never reaches production.
+
+## Familiar: the ORM logic
+
+There is no conceptual difference between Prisma and Entity Framework Core: both define the model in code, both generate migrations, and both fetch related data in a single query with `include`/`Include`.
+
+```csharp title="Data/Order.cs"
+public class Order
+{
+    public string Id { get; set; } = default!;
+    public string UserId { get; set; } = default!;
+    public User User { get; set; } = default!;
+    public List<OrderItem> Items { get; set; } = new();
+}
+```
+
+What the `schema.prisma` file does in Prisma is done here by attributes on C# classes and the `DbContext` configuration. The syntax is different; the problem it solves is the same.
+
+## Not yet clear: which jobs .NET is preferred for
+
+I want to be honest in this part: I'm still at the start of this path, I'm attending Commencis's free mentored bootcamp, and I haven't shipped a real .NET project to production. I have more than four years of production experience with Node.js, while on the .NET side I'm just starting. This post doesn't reach a "which one is better" conclusion, because I don't have the experience to make that comparison; it only describes, as far as I've seen while learning, where the two ecosystems are alike and where they differ.
+
+## Conclusion
+
+Moving from Node to .NET Core, the layered architecture and ORM logic feel familiar, while dependency injection and a stricter type system bring a different way of working. I'll update this post with my own real experience as I learn.

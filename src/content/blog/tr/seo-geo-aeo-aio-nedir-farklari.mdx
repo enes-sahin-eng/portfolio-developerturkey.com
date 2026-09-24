@@ -1,0 +1,108 @@
+SEO, GEO, AEO ve AIO, bir sitenin arama motorlarında ve yapay zeka cevaplarında görünmesi için kullanılan dört kısaltmadır. SEO uzun süredir oturmuş bir disiplin; GEO, AEO ve AIO ise 2023'ten sonra yaygınlaşan ve tanımları hâlâ tartışılan terimler. Ben Enes Şahin, full stack web geliştiriciyim. Bu yazıda dört terimi Google'ın resmi dokümanlarına, GEO'nun akademik kaynağına ve bu siteyi kurarken uyguladıklarıma dayanarak ayırıyorum.
+
+Yazıyı hazırlarken aynı soruyu ChatGPT, Claude ve DeepSeek'e sordum ve cevapları karşılaştırdım. Üç model SEO, AEO ve GEO'da büyük ölçüde anlaştı, AIO'da ise üç farklı tanım verdi. Cevaplarda geçen kaynakları tek tek açtım; bu yazıda yalnızca resmi ya da akademik kaynaktan doğrulayabildiğim bilgileri kullanıyorum.
+
+## SEO nedir, neyi optimize eder?
+
+SEO (Search Engine Optimization, arama motoru optimizasyonu), bir sitenin Google ve Bing gibi arama motorlarında taranmasını, dizine eklenmesini ve ilgili aramalarda üst sıralarda gösterilmesini sağlama işidir. SEO'da optimize edilen birim sayfadır: başlık, açıklama, içerik, teknik erişilebilirlik ve siteye verilen linkler.
+
+SEO'nun başarı sorusu basittir: "Bu sayfa ilgili aramada kaçıncı sırada ve ne kadar tıklama alıyor?" Ölçümü de en oturmuş olanıdır. Google Search Console gösterim, tıklama, tıklama oranı ve ortalama konum verir.
+
+SEO yalnızca klasik mavi linkler için önemli değildir. Google, [AI özellikleri dokümanında](https://developers.google.com/search/docs/appearance/ai-features) bir sayfanın yapay zeka cevaplarında kaynak link olarak görünebilmesi için dizine eklenmiş ve snippet ile gösterilebilir olması gerektiğini yazıyor. Yani Google tarafında SEO, diğer üç terimin de zemini.
+
+## AEO nedir?
+
+AEO (Answer Engine Optimization, cevap motoru optimizasyonu), içeriği bir soruya doğrudan cevap olarak alınabilecek şekilde yazma işidir. AEO'nun hedefi sıralama değil, cevabın kendisi olarak seçilmektir.
+
+AEO iki farklı genişlikte kullanılıyor:
+
+- **Dar anlamda:** Google'daki öne çıkan snippet'ler, "Kullanıcılar şunları da sordu" kutuları ve sesli asistanların tek cümlelik cevapları.
+- **Geniş anlamda:** ChatGPT, Perplexity ve Google'ın yapay zeka cevapları. Bu kullanımda AEO, GEO ile neredeyse aynı anlama geliyor.
+
+Türkçe aramada bir tuzak daha var: AEO, gümrük ve dış ticarette "Yetkilendirilmiş Yükümlü" (Authorized Economic Operator) statüsünün de kısaltması. "AEO nedir" diye aratıldığında gümrük sonuçlarının çıkması bu yüzden. Pazarlama anlamını arayan biri için "AEO SEO" ya da "Answer Engine Optimization" yazmak daha net sonuç verir.
+
+## GEO nedir?
+
+GEO (Generative Engine Optimization, üretken motor optimizasyonu), bir markanın ya da içeriğin ChatGPT, Perplexity, Gemini ve Google'ın yapay zeka cevapları gibi üretken sistemlerin cevabında kaynak veya isim olarak geçmesini hedefleyen çalışmadır. SEO "Sayfam kaçıncı sırada?" diye sorarken GEO "Yapay zeka cevabı oluştururken beni kaynak gösteriyor mu?" diye sorar.
+
+GEO'nun dört terim arasında en net akademik kökeni var. Terim, Aggarwal ve arkadaşlarının 2023'te yayımlanan ve KDD 2024'te kabul edilen [GEO makalesinden](https://arxiv.org/abs/2311.09735) geliyor. Makale, önerdiği yöntemlerle içeriğin üretken motor cevaplarındaki görünürlüğünün yüzde 40'a kadar artabildiğini, etkinin ise konu alanına göre değiştiğini söylüyor.
+
+GEO'da her platformun kendi tarayıcısı ve kaynak seçimi var. Örneğin OpenAI, [bot dokümanında](https://developers.openai.com/api/docs/bots) ChatGPT aramasında görünmek için robots.txt'te OAI-SearchBot'a izin verilmesini öneriyor; bu botu engelleyen siteler ChatGPT'nin arama cevaplarında yer almıyor. Bu yüzden ChatGPT'de görünen bir sitenin Perplexity'de ya da Claude'da da görüneceği varsayılamaz.
+
+GEO kısaltması da Türkçede karışabiliyor, çünkü "geo" coğrafya çağrışımı yapıyor. "GEO SEO" ya da "Generative Engine Optimization" diye aramak niyeti netleştirir.
+
+## AIO nedir, neden en belirsiz terim?
+
+AIO'nun sektörde kabul görmüş tek bir anlamı yoktur. AIO en az üç farklı şekilde kullanılıyor:
+
+1. **AI Optimization:** Yapay zeka görünürlüğünün tamamı için şemsiye terim. Bu kullanımda AIO, AEO ile GEO'yu kapsıyor.
+2. **AI Overviews optimizasyonu:** Yalnızca Google'ın arama sonuçlarının üstünde çıkan yapay zeka özetinde görünmek.
+3. **All-in-One:** Yazılım dünyasında AIO çoğu zaman hiç ilgisiz bir anlamda, "hepsi bir arada" için kullanılıyor.
+
+Karşılaştırdığım üç model de bu belirsizliği yansıttı. Claude AIO'yu "genellikle Google AI Overviews" diye tanımladı, DeepSeek "AEO ile GEO'nun toplamı olan AI Optimization" dedi, ChatGPT ise terimin standart bir anlamı olmadığını ve kullanırken ne kastedildiğinin yazılması gerektiğini söyledi.
+
+Google'ın kendi ürün adları da işi karıştırıyor. Google bu özelliğe İngilizcede "AI Overviews" diyor, Türkçede ise "AI Bakışı". Google, AI Modu ile AI Bakışı'nın Türkiye'de kullanıma açıldığını [18 Şubat 2026'da duyurdu](https://blog.google/intl/tr-tr/urun-duyurulari/turkiyede-ai-modu-ve-ai-bakisi-donemi-basliyor/). Bir teklifte ya da raporda "AIO yapacağız" demek yerine "Google AI Bakışı'nda görünürlüğü artıracağız" demek, neyin ölçüleceğini baştan netleştirir.
+
+## SEO, AEO, GEO ve AIO arasındaki farklar nelerdir?
+
+SEO, AEO, GEO ve AIO arasındaki temel fark, her birinin başarıyı farklı bir yerde aramasıdır: SEO sıralamada, AEO doğrudan cevapta, GEO yapay zeka cevabındaki kaynaklarda, AIO ise kullananın kastettiği yerde.
+
+| Terim | Açılımı | Hedefi | Nerede etkili | Nasıl ölçülür |
+| --- | --- | --- | --- | --- |
+| SEO | Search Engine Optimization | Organik sıralama ve tıklama | Google, Bing, Yandex | Search Console: gösterim, tıklama, konum |
+| AEO | Answer Engine Optimization | Doğrudan cevap olarak seçilmek | Öne çıkan snippet, soru kutuları, sesli asistanlar; geniş anlamda yapay zeka cevapları | Snippet görünürlüğü; geniş anlamda GEO ölçümleri |
+| GEO | Generative Engine Optimization | Yapay zeka cevabında kaynak veya isim olarak geçmek | ChatGPT, Perplexity, Gemini, Claude, Google AI Bakışı | Tekrarlı soru testleri, bahsedilme ve kaynak gösterilme oranı |
+| AIO | AI Optimization ya da AI Overviews | Kullanana göre değişir | Kullanana göre değişir | Kullanana göre değişir |
+
+Bu dört terimi birbirinden bağımsız dört iş gibi düşünmek yanıltıcı olur. Hepsi aynı temele dayanıyor: taranabilen, dizine eklenen, soruyu açıkça cevaplayan ve güvenilir bir içerik.
+
+## GEO, SEO'nun yerini alıyor mu?
+
+Hayır; Google'a göre yapay zeka aramasına optimizasyon hâlâ SEO'dur. Google, 10 Temmuz 2026 tarihli [üretken yapay zeka optimizasyon rehberinde](https://developers.google.com/search/docs/fundamentals/ai-optimization-guide) AEO ve GEO'yu yapay zeka aramasına odaklanan SEO çalışmaları için kullanılan terimler olarak tanımlıyor ve Google Arama açısından bunun hâlâ SEO olduğunu açıkça yazıyor.
+
+X'te (Twitter) bu terimlerle ilgili paylaşımlarda en sık dönen tartışma da tam olarak bu: "SEO öldü mü?" Google'ın dokümanları bu soruya net cevap veriyor:
+
+- **Ek bir gereklilik yok.** Google, AI Bakışı ve AI Modu'nda görünmek için ek bir teknik gereklilik ya da özel optimizasyon olmadığını söylüyor.
+- **Arama dizini şart.** Yapay zeka cevaplarındaki kaynak linkler, Google'ın arama dizinindeki sayfalardan geliyor. Google ayrıca bir soruyu alt sorulara bölüp birden fazla arama yapan "query fan-out" yöntemini kullandığını belirtiyor.
+- **Özel yapay zeka dosyası gerekmiyor.** Google, arama sonuçlarında görünmek için llms.txt gibi yapay zeka metin dosyalarına ya da yeni işaretlemelere gerek olmadığını, bu dosyaların ne yardımı ne de zararı olduğunu yazıyor.
+- **Yapay zeka için yeniden yazmak gereksiz.** Google, içeriği yapay zeka için parçalara bölmenin ya da yeniden yazmanın gerekmediğini söylüyor.
+
+Burada önemli bir sınır var: Bu kurallar Google'ın kendi sistemleri için geçerli. ChatGPT, Claude ve Perplexity kendi tarayıcılarını kullanıyor. Bu yüzden Google'da iyi sıralanan bir sayfa, robots.txt'te bu botları engelliyorsa o platformların cevaplarında görünmeyebilir.
+
+## SEO ve GEO nasıl ölçülür?
+
+SEO'yu Search Console ile ölçmek kolaydır; GEO'yu ölçmek ise tekrar ve kayıt gerektirir, çünkü yapay zeka cevapları her denemede değişebilir.
+
+**Google tarafı:** Search Console'da üretken yapay zeka performans raporu var. [Google'ın yardım sayfasına](https://support.google.com/webmasters/answer/16984139) göre rapor, sitenin linklerinin AI Bakışı, AI Modu ve görselli aramalarda kaç kez gösterildiğini ölçüyor. Rapor tıklamayı değil gösterimi sayıyor ve 31 Ağustos 2026 itibarıyla tüm sitelere açıldı. Yeterli gösterim almayan sitelerde rapor görünmeyebiliyor.
+
+**ChatGPT, Claude ve Perplexity tarafı:** Bu platformların site sahiplerine sunduğu Search Console benzeri bir panel yok. Ölçüm için bir soru listesi hazırlayıp aynı soruları düzenli aralıklarla sormak ve sonucu tarihiyle kaydetmek gerekiyor. Takip edilen başlıca ölçüler şunlar:
+
+- **Bahsedilme oranı:** Markanın adı sorulan soruların kaçında geçiyor.
+- **Kaynak gösterilme oranı:** Sitenin linki kaç cevapta kaynak olarak veriliyor.
+- **Görünürlük payı (share of voice):** Rakiplere göre cevaplarda ne kadar yer alınıyor.
+
+Tek bir denemeye güvenmemek gerekiyor. Nisan 2026 tarihli [Don't Measure Once](https://arxiv.org/abs/2604.07585) çalışması, yapay zeka cevaplarının denemeden denemeye, sorunun ifadesine ve zamana göre değiştiğini, bu yüzden görünürlüğün tek bir sonuç olarak değil, tekrarlı ölçümlerden çıkan bir dağılım olarak ele alınması gerektiğini söylüyor. [Yerel bir işletmenin yapay zeka cevaplarında çıkması](/tr/blog/yerel-isletme-yapay-zeka-cevaplarinda-nasil-cikar) üzerine yazdığım gözlem yazısında da aynı aramanın Claude'da bir çıkıp bir çıkmadığını gördüm.
+
+## Bu sitede neleri uyguladım?
+
+Bu siteyi, yani [Enes Şahin'in portfolyosunu](/tr) kurarken SEO ve GEO için şu adımları uyguladım:
+
+- **Yapay zeka botlarına açık robots.txt:** OAI-SearchBot, ChatGPT-User, ClaudeBot, Claude-SearchBot ve PerplexityBot dahil yapay zeka botlarına açıkça izin verdim. Next.js'te `robots.ts` dosyası bunu üretiyor:
+
+```ts title="src/app/robots.ts (kısaltılmış)"
+const aiAgents = ["GPTBot", "OAI-SearchBot", "ChatGPT-User", "ClaudeBot", "Claude-SearchBot", "PerplexityBot"];
+
+export default function robots(): MetadataRoute.Robots {
+  return {
+    rules: [{ userAgent: "*", allow: "/" }, ...aiAgents.map((userAgent) => ({ userAgent, allow: "/" }))],
+    sitemap: `${site.url}/sitemap.xml`,
+  };
+}
+```
+
+- **Yapısal veri ile varlık grafiği:** Ana sayfada Person, WebSite ve ProfilePage şemaları `@id` ile birbirine bağlı. Blog yazılarında BlogPosting şeması yazarı aynı Person kaydına bağlıyor. Böylece arama motoru "bu yazıyı kim yazdı" sorusunun cevabını tek bir kimlikte buluyor.
+- **Sayfada görünen SSS ile aynı şema:** Her yazının sonundaki sık sorulan sorular ile FAQPage şeması aynı listeden üretiliyor. Şema, sayfada görünmeyen bir şey iddia edemiyor.
+- **Doğru canonical adresi:** Canonical ve hreflang adreslerini, yönlendirme yapmayan www'li adrese çevirdim. Bu hatayı [Next.js'te çok dilli site kurulumu](/tr/blog/nextjs-cok-dilli-site-hreflang-canonical-kurulumu) yazısında anlattım.
+- **llms.txt:** Sitede bir `llms.txt` dosyası var, ama beklentim düşük. Google bu dosyayı kullanmadığını açıkça söylüyor, diğer sağlayıcıların okuduğunu doğrulayan resmi bir açıklama da bilmiyorum. Maliyeti düşük olduğu için duruyor, bir strateji olarak saymıyorum.
+
+Bu adımların bu sitenin görünürlüğüne ne kadar etki ettiğini henüz ölçmedim; site yeni ve ölçüm için birkaç hafta gerekiyor. Sonuçları ölçtükçe bu yazıyı güncelleyeceğim.

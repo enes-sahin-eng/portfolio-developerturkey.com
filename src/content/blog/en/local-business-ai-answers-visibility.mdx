@@ -1,0 +1,75 @@
+I'm Enes Şahin. The website of a bag and accessories shop I work on as a web developer started showing up in ChatGPT and Google's AI answers within a few days. This post is an observation, not proof: I describe what I saw, which steps I can share, and what I don't know.
+
+## What did I see in AI answers?
+
+I typed the same searches into different AI tools. Before the changes, the shop appeared in none of these answers. As of September 19, 2026, the situation looks like this (the searches are in Turkish; the English meaning is in parentheses):
+
+| Search | Where | Before | Now |
+| --- | --- | --- | --- |
+| çanta aksesuarı satan işletmeler (businesses selling bag accessories) | Google, classic results | Page 3 or 4 | First page, around position 3 |
+| çanta aksesuarı satan işletmeler | Google, AI answer | Not shown | Shown in the answer |
+| Beylikdüzünde çanta aksesuarı satan işletmeler (in Beylikdüzü, a district of Istanbul) | ChatGPT | Not shown | Shown at the top |
+| çanta aksesuarı satan işletmeler | Claude | Not shown | Shown occasionally, not every time |
+| Beylikdüzünde çanta aksesuarı satan işletmeler | Claude | Not shown | Shown at the top |
+
+The result is more stable with the district name: in the search with Beylikdüzü, both ChatGPT and Claude show the business at the top, while in the search without it the result in Claude varies.
+
+## What did I do?
+
+These are the steps I can share:
+
+- I fixed the site's basic SEO settings.
+- I added a Google Business Profile account.
+- I added a `robots.txt` to the site.
+- I added an `llms.txt` to the site.
+
+I did the last three about three days ago. There are other steps I took that I'm not sharing.
+
+`robots.txt` is the file that tells search engines and AI bots which pages they may access. `llms.txt` is a text file, not yet an official standard, that briefly introduces a site and its important pages to language models. An example from this site's `robots.txt`:
+
+```txt title="robots.txt (example)"
+User-Agent: *
+Allow: /
+
+User-Agent: OAI-SearchBot
+Allow: /
+
+User-Agent: ClaudeBot
+Allow: /
+
+Sitemap: https://www.developerturkey.com/sitemap.xml
+```
+
+## Did this result come from these steps?
+
+I don't know, and I want to say that clearly:
+
+1. **The time span is very short.** About three days have passed since the last changes. That isn't enough to say whether a ranking change is lasting.
+2. **I changed more than one thing at once.** I can't tell which one had the effect.
+3. **There are steps I'm not sharing.** I can't say the steps in this list are enough on their own.
+4. **AI answers vary.** In Claude, the same search doesn't show the shop every time. So seeing an answer once doesn't mean it will always be seen.
+5. **The effect of `llms.txt` isn't proven.** As far as I know, there is no official statement confirming that the major providers read this file, so I don't attribute the result to it.
+6. **In local searches, the business profile may carry a lot of weight.** In searches that include a district name, the Google Business Profile may play a large part. This is a guess, not something I measured.
+
+## How do I test my own searches?
+
+Because AI answers can change by person, location and moment, you shouldn't rely on a single try:
+
+- Test in a private window, without being logged in.
+- Type the same search several times on different days.
+- Try the search with and without the district name separately.
+- Record the date, the tool and the result of every try in a table.
+
+I'll also repeat the same searches at regular intervals and update this table.
+
+## What is recommended for a local business?
+
+The following are commonly recommended steps. I don't have the data to tell how much each one helps:
+
+- **Not blocking AI bots in `robots.txt`.** For example, blocking OAI-SearchBot can make it harder to appear in ChatGPT's search.
+- **Writing the business name, address and phone number exactly the same everywhere.** The information on the site, in the business profile and in directories should be consistent.
+- **Filling in the Google Business Profile completely.**
+- **Describing the business in one sentence on the site.** For example: "X is a business that sells bags and accessories in Beylikdüzü." AI tools tend to quote clear definition sentences like this.
+- **Adding structured data (LocalBusiness).** Whatever is in the schema should also be visible on the page.
+- **Adding the site to Bing Webmaster Tools.** ChatGPT's search can also draw on the Bing index.
+- **Getting others to mention you.** Directories, lists and local guides can show up as sources in AI answers.

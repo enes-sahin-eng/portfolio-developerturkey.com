@@ -1,0 +1,106 @@
+I'm Enes Şahin, a full stack web developer. Since 2022 I have used JWT authentication and role-based authorization in an e-commerce backend I build with Node.js and Express. In this post I walk through the core pieces of this approach with example code, along with the mistakes people often make.
+
+## How JWT works, briefly
+
+A JSON Web Token is a piece of text that the server signs and embeds information about the user in (such as the id and role). When the user logs in, the server issues the token, and the client sends it back in the `Authorization` header on every following request. The server verifies the token's signature and trusts the information inside it; it doesn't need to hit the database to check a session on every request.
+
+The example uses two tokens:
+
+- **Access token**: short-lived (for example 15 minutes) and sent with every API request.
+- **Refresh token**: long-lived, used only to get a new access token, and stored in an `httpOnly` cookie.
+
+I recommend keeping the access token in memory, not in `localStorage`. Because `localStorage` can be read from JavaScript, an XSS hole turns directly into token theft; and when the page reloads, a new access token is fetched with the refresh token anyway.
+
+## Issuing tokens
+
+```ts title="src/lib/tokens.ts"
+import jwt from "jsonwebtoken";
+
+type Payload = { userId: string; role: "admin" | "customer" };
+
+export function signAccessToken(payload: Payload) {
+  return jwt.sign(payload, process.env.JWT_ACCESS_SECRET!, { expiresIn: "15m" });
+}
+
+export function signRefreshToken(payload: Payload) {
+  return jwt.sign(payload, process.env.JWT_REFRESH_SECRET!, { expiresIn: "7d" });
+}
+```
+
+Using separate secrets for the access and refresh tokens is good practice. If one leaks, you can rotate it without touching the other, and the two tokens aren't tied to the same key.
+
+## The authentication middleware
+
+When a request comes in, a middleware first checks whether the token is valid, then attaches the user to the `req` object:
+
+```ts title="src/middleware/authenticate.ts"
+import type { Request, Response, NextFunction } from "express";
+import jwt from "jsonwebtoken";
+
+export type AuthedRequest = Request & { user?: { userId: string; role: string } };
+
+export function authenticate(req: AuthedRequest, res: Response, next: NextFunction) {
+  const header = req.headers.authorization;
+  const token = header?.startsWith("Bearer ") ? header.slice(7) : null;
+  if (!token) return res.status(401).json({ message: "No session found" });
+
+  try {
+    req.user = jwt.verify(token, process.env.JWT_ACCESS_SECRET!) as AuthedRequest["user"];
+    next();
+  } catch {
+    res.status(401).json({ message: "Token is invalid or expired" });
+  }
+}
+```
+
+## Role-based authorization
+
+Authentication answers "who is this user?", authorization answers "can this user do this?" Keeping them in separate middlewares pays off, because different roles can have different access to the same endpoint:
+
+```ts title="src/middleware/requireRole.ts"
+import type { Response, NextFunction } from "express";
+import type { AuthedRequest } from "./authenticate";
+
+export function requireRole(...allowed: string[]) {
+  return (req: AuthedRequest, res: Response, next: NextFunction) => {
+    if (!req.user || !allowed.includes(req.user.role)) {
+      return res.status(403).json({ message: "You are not allowed to do this" });
+    }
+    next();
+  };
+}
+```
+
+The route definitions stay readable:
+
+```ts title="src/routes/orders.ts"
+router.get("/orders", authenticate, requireRole("admin"), listAllOrders);
+router.get("/orders/me", authenticate, listMyOrders);
+```
+
+## A common mistake: skipping the ownership check
+
+A role check alone is not enough. On an endpoint like `GET /orders/:id`, even if the "any logged-in customer" check passes, you still have to check separately whether that order really belongs to the user making the request:
+
+```ts title="src/controllers/orders.ts"
+export async function getOrder(req: AuthedRequest, res: Response) {
+  const order = await db.order.findUnique({ where: { id: req.params.id } });
+  if (!order) return res.status(404).json({ message: "Order not found" });
+
+  const isOwner = order.userId === req.user!.userId;
+  const isAdmin = req.user!.role === "admin";
+  if (!isOwner && !isAdmin) return res.status(403).json({ message: "You don't have access to this order" });
+
+  res.json(order);
+}
+```
+
+Skipping this line means any customer who passes `requireRole("customer")` can see another user's order by changing the id in the URL. The role check asks "are you a customer?", the ownership check asks "is this record yours?"; they are different questions, and both are needed.
+
+## Being able to revoke refresh tokens
+
+Because access tokens are short-lived, they can't be revoked once signed; you have to wait for them to expire. Refresh tokens are different: when a user logs out or changes their password, that token must stop working. A common approach is to store a hash of each refresh token in the database and reject any incoming token that isn't in the table. Storing the hash rather than the token itself means that even if the database leaks, the tokens can't be used directly.
+
+## Conclusion
+
+In short, this setup keeps a short-lived access token in memory and a long-lived refresh token in an `httpOnly` cookie, puts authentication and role checks in separate middlewares, and adds an ownership check on top of the role check to confirm the record really belongs to the user. It may be more than a small API needs, but in a growing project this separation makes it easier to change things later.

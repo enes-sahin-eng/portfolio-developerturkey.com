@@ -219,6 +219,238 @@ export const posts: Post[] = [
     ],
     load: () => import("@/content/blog/tr/yerel-isletme-yapay-zeka-cevaplarinda-nasil-cikar.mdx"),
   },
+  {
+    key: "seo-geo-aeo-aio",
+    locale: "tr",
+    slug: "seo-geo-aeo-aio-nedir-farklari",
+    title: "SEO, GEO, AEO ve AIO Nedir? Aralarındaki Farklar Neler?",
+    description:
+      "SEO, GEO, AEO ve AIO ne demek, farkları neler? Google'ın resmi rehberi ve bu sitede uyguladıklarımla terim karmaşasını sadeleştirip anlatıyorum. Hemen oku!",
+    publishedAt: "2026-09-25",
+    updatedAt: "2026-09-25",
+    faq: [
+      {
+        q: "GEO, SEO'nun yerini alacak mı?",
+        a: "Google'a göre hayır. Google'ın üretken yapay zeka optimizasyon rehberi, yapay zeka aramasına optimizasyonun Google Arama açısından hâlâ SEO olduğunu söylüyor. Google'ın yapay zeka cevaplarındaki kaynak linkler arama dizinindeki sayfalardan geldiği için dizine eklenmemiş bir sayfa kaynak olamaz.",
+      },
+      {
+        q: "AIO ile GEO aynı şey mi?",
+        a: "AIO'nun tek bir standart anlamı yok. Bazı kaynaklarda Google AI Bakışı (AI Overviews) optimizasyonu, bazılarında AEO ve GEO'yu kapsayan genel yapay zeka optimizasyonu anlamına geliyor. Karışıklığı önlemek için AIO derken neyin kastedildiğini açıkça yazmak gerekir.",
+      },
+      {
+        q: "llms.txt eklemek gerekli mi?",
+        a: "Google aramada görünmek için gerekli değil. Google, llms.txt gibi yapay zeka metin dosyalarının arama görünürlüğüne ne yardımı ne zararı olduğunu söylüyor. Diğer sağlayıcılar için de etkisi kanıtlanmış değil; maliyeti düşük olduğu için eklenebilir ama bir strateji sayılmamalı.",
+      },
+      {
+        q: "Yapay zeka görünürlüğü nasıl ölçülür?",
+        a: "Google AI Bakışı ve AI Modu için Search Console'daki üretken yapay zeka performans raporu gösterim sayısını verir. ChatGPT, Claude ve Perplexity için böyle bir panel yok; aynı soru listesini farklı günlerde tekrar sorup sonuçları tarihiyle kaydetmek gerekir.",
+      },
+    ],
+    load: () => import("@/content/blog/tr/seo-geo-aeo-aio-nedir-farklari.mdx"),
+  },
+  {
+    key: "seo-geo-aeo-aio",
+    locale: "en",
+    slug: "seo-geo-aeo-aio-differences",
+    title: "SEO vs GEO vs AEO vs AIO: What Are the Differences?",
+    description:
+      "What do SEO, GEO, AEO and AIO mean, and how do they differ? I explain it with Google's official docs and what I set up while building this site. Read it now!",
+    publishedAt: "2026-09-25",
+    updatedAt: "2026-09-25",
+    faq: [
+      {
+        q: "Will GEO replace SEO?",
+        a: "According to Google, no. Google's generative AI optimization guide says that, from Google Search's perspective, optimizing for AI search is still SEO. Supporting links in Google's AI answers come from pages in the search index, so a page that isn't indexed can't be cited.",
+      },
+      {
+        q: "Are AIO and GEO the same thing?",
+        a: "AIO has no single standard meaning. Some sources use it for Google AI Overviews optimization, others for general AI optimization that covers AEO and GEO. To avoid confusion, state clearly what AIO refers to.",
+      },
+      {
+        q: "Do I need an llms.txt file?",
+        a: "Not to appear in Google Search. Google says AI text files such as llms.txt neither help nor hurt visibility in Search. Their effect on other providers isn't proven either; the file costs little to add, but it shouldn't be counted as a strategy.",
+      },
+      {
+        q: "How do you measure AI visibility?",
+        a: "For Google AI Overviews and AI Mode, the generative AI performance report in Search Console shows impressions. ChatGPT, Claude and Perplexity offer no such panel; you ask the same list of questions on different days and record each result with its date.",
+      },
+    ],
+    load: () => import("@/content/blog/en/seo-geo-aeo-aio-differences.mdx"),
+  },
+  {
+    key: "nodejs-jwt-rbac",
+    locale: "en",
+    slug: "nodejs-express-jwt-role-based-authorization",
+    title: "Role-Based Authorization in Node.js and Express with JWT",
+    description:
+      "I explain authentication and role-based authorization with Express and JWT through code examples, including the common ownership check mistake. Read it now!",
+    publishedAt: "2026-09-25",
+    updatedAt: "2026-09-25",
+    faq: [
+      {
+        q: "What is JWT and how is it used in Express?",
+        a: "A JWT is a piece of text the server signs and embeds information such as the user id and role in. When the user logs in, the server issues a token, the client sends it in the Authorization header on every request, and a middleware in Express verifies the signature.",
+      },
+      {
+        q: "What is the difference between an access token and a refresh token?",
+        a: "An access token is short-lived (for example 15 minutes) and sent with every API request. A refresh token is long-lived and used only to get a new access token; storing it in an httpOnly cookie is recommended.",
+      },
+      {
+        q: "Should a JWT be stored in localStorage?",
+        a: "It isn't recommended. Because localStorage can be read with JavaScript, an XSS hole leads to token theft. Keeping the access token in memory and the refresh token in an httpOnly cookie is safer.",
+      },
+      {
+        q: "Isn't a role check enough? Why is an ownership check needed?",
+        a: "A role check looks at whether the user is a customer or an admin, but it doesn't check whether a record belongs to that user. Without an ownership check, any logged-in customer can see someone else's order by changing the id in the URL.",
+      },
+    ],
+    load: () => import("@/content/blog/en/nodejs-express-jwt-role-based-authorization.mdx"),
+  },
+  {
+    key: "nextjs-i18n-seo",
+    locale: "en",
+    slug: "nextjs-multilingual-site-hreflang-canonical",
+    title: "Multilingual Next.js Site: Setting Up hreflang and Canonical",
+    description:
+      "I explain a TR/EN setup in the Next.js App Router, and the hreflang and canonical mistakes to avoid, starting from my own www redirect mistake. Read it now!",
+    publishedAt: "2026-09-25",
+    updatedAt: "2026-09-25",
+    faq: [
+      {
+        q: "What is hreflang and why is it needed?",
+        a: "hreflang is a tag that links the different language versions of the same content. Without it, Google may treat the language versions as unrelated pages, or even take one for a duplicate and hide it.",
+      },
+      {
+        q: "How do you add hreflang in the Next.js App Router?",
+        a: "By listing the path of each language and the x-default value in the alternates.languages field inside generateMetadata. Every language page should list all alternates, including itself.",
+      },
+      {
+        q: "What does x-default do?",
+        a: "x-default sets the default page for visitors who match no language. On this site it points to the Turkish version.",
+      },
+      {
+        q: "Which address should the canonical point to?",
+        a: "The site's real live address, the one that doesn't redirect. If the host redirects the apex to www, the canonical, hreflang and sitemap should use the www address. A request to the canonical address with curl -I should return 200.",
+      },
+    ],
+    load: () => import("@/content/blog/en/nextjs-multilingual-site-hreflang-canonical.mdx"),
+  },
+  {
+    key: "nodejs-prisma-postgresql",
+    locale: "en",
+    slug: "nodejs-prisma-postgresql-schema-design",
+    title: "Database Schema Design in Node.js with Prisma and PostgreSQL",
+    description:
+      "I explain designing a relational schema with Prisma and PostgreSQL through an e-commerce example, including migrations, indexes and transactions. Read it now!",
+    publishedAt: "2026-09-25",
+    updatedAt: "2026-09-25",
+    faq: [
+      {
+        q: "Why store money as an Int instead of a Float in the database?",
+        a: "Floating point numbers can produce rounding errors; an amount like 10.10 can be stored as 10.099999999. Storing the amount as a whole number of cents removes this error.",
+      },
+      {
+        q: "Does Prisma create indexes for foreign keys automatically?",
+        a: "No, Prisma doesn't add indexes for foreign key fields automatically. You need to define indexes on frequently queried fields yourself with @@index.",
+      },
+      {
+        q: "What is the N+1 query problem in Prisma?",
+        a: "It is running a separate query for each record inside a loop; for 100 records, 101 queries run. It is avoided by fetching related data in a single query with include.",
+      },
+      {
+        q: "When is $transaction used in Prisma?",
+        a: "For operations with several steps where all of them must be rolled back if one fails, such as decreasing stock while creating an order. If one of the steps throws, the changes made up to that point are rolled back.",
+      },
+    ],
+    load: () => import("@/content/blog/en/nodejs-prisma-postgresql-schema-design.mdx"),
+  },
+  {
+    key: "junior-portfolyo",
+    locale: "en",
+    slug: "junior-developer-portfolio-projects",
+    title: "Junior Developer Portfolio: Which Projects Should Go In?",
+    description:
+      "Which projects belong in a portfolio, how to show client work, how to organize GitHub? I explain it all with real decisions from my own portfolio. Read it now!",
+    publishedAt: "2026-09-25",
+    updatedAt: "2026-09-25",
+    faq: [
+      {
+        q: "Which projects should a junior developer portfolio include?",
+        a: "What each project shows matters more than the number: finished, working projects that solve a real problem and involve an architectural decision you can defend. A few strong projects leave a better impression than many weak ones.",
+      },
+      {
+        q: "What should you watch when showing client projects in a portfolio?",
+        a: "Name the organization only with permission; otherwise use a general description. Screenshots should contain no real customer data; use a test account and sample data.",
+      },
+      {
+        q: "What should you pay attention to on a GitHub profile?",
+        a: "The first sentence of the README should say what the project does, the commit history should show a real development process, and pinned repos should be chosen from the ones that say the most, not at random.",
+      },
+      {
+        q: "Should I put a project that doesn't work in my portfolio?",
+        a: "Instead of a demo link that doesn't work, it's better to show it with screenshots and an architecture description. A broken link leaves a half-finished impression.",
+      },
+    ],
+    load: () => import("@/content/blog/en/junior-developer-portfolio-projects.mdx"),
+  },
+  {
+    key: "nodejs-dotnet-gecis",
+    locale: "en",
+    slug: "nodejs-developer-moving-to-dotnet-core",
+    title: "Moving to .NET Core Through a Node.js Developer's Eyes",
+    description:
+      "Moving from Node.js to C# and .NET Core, I describe where the two ecosystems are alike and where they differ. Not a guide, but a learning note. Read it now!",
+    publishedAt: "2026-09-25",
+    updatedAt: "2026-09-25",
+    faq: [
+      {
+        q: "Is moving to .NET Core hard for someone who knows Node.js?",
+        a: "The layered architecture and ORM logic feel familiar; dependency injection and a stricter type system bring a different way of working. This post is a learning note and doesn't give a definite level of difficulty.",
+      },
+      {
+        q: "How does dependency injection work in ASP.NET Core?",
+        a: "Dependency injection is part of the framework. You write the interface (for example IOrderService) in the controller's constructor and define once in Program.cs, with builder.Services.AddScoped, which class gets injected.",
+      },
+      {
+        q: "What is the difference between Prisma and Entity Framework Core?",
+        a: "Conceptually they do the same job: they define the model in code, generate migrations and fetch related data in a single query. The difference is in syntax; Prisma uses a schema.prisma file while EF Core uses C# classes and the DbContext configuration.",
+      },
+      {
+        q: "What is the difference between the type systems of C# and TypeScript?",
+        a: "In TypeScript, loosenings like any can leave some errors until runtime. C# is stricter and catches errors such as a wrongly typed parameter or an unchecked null reference at compile time.",
+      },
+    ],
+    load: () => import("@/content/blog/en/nodejs-developer-moving-to-dotnet-core.mdx"),
+  },
+  {
+    key: "local-ai-visibility",
+    locale: "en",
+    slug: "local-business-ai-answers-visibility",
+    title: "How Does a Local Business Show Up in AI Search Answers?",
+    description:
+      "A bag shop's website started showing up in ChatGPT and Google AI answers. I share what I observed, what I don't know and what I recommend. Read it now!",
+    publishedAt: "2026-09-25",
+    updatedAt: "2026-09-25",
+    faq: [
+      {
+        q: "What do you do to show up in AI answers?",
+        a: "There is no definite method. Commonly recommended steps: not blocking AI bots in robots.txt, filling in the Google Business Profile completely, writing the business details the same everywhere, describing the site in a clear sentence and adding structured data. The observation in this post covers only three days.",
+      },
+      {
+        q: "Does llms.txt make a site show up in AI answers?",
+        a: "It isn't proven. llms.txt isn't an official standard, and no official statement confirming that the major providers read it is known. It costs little to add, but it doesn't count as a strategy on its own.",
+      },
+      {
+        q: "Does ChatGPT show the same result every time?",
+        a: "No. AI answers can change even for the same question; for example, the same search didn't show up in Claude every time. That's why you should try the search in a private window several times on different days and record each result with its date.",
+      },
+      {
+        q: "Do you need to allow AI bots in robots.txt?",
+        a: "Blocking these bots can make it harder to appear in the related products. For example, OAI-SearchBot is used by ChatGPT's search. Google-Extended only controls whether Gemini can use the content and doesn't affect Google's AI summaries.",
+      },
+    ],
+    load: () => import("@/content/blog/en/local-business-ai-answers-visibility.mdx"),
+  },
 ];
 
 export function blogPath(locale: Locale, slug?: string) {

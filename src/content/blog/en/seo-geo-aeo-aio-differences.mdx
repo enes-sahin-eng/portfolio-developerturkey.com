@@ -1,0 +1,106 @@
+SEO, GEO, AEO and AIO are four acronyms for getting a website seen in search engines and in AI answers. SEO is a long established discipline; GEO, AEO and AIO are terms that spread after 2023 and whose definitions are still debated. I'm Enes Şahin, a full stack web developer. In this post I separate the four terms using Google's official documentation, the academic source of GEO, and what I set up while building this site.
+
+While preparing this post, I asked ChatGPT, Claude and DeepSeek the same question and compared their answers. The three models largely agreed on SEO, AEO and GEO, but gave three different definitions of AIO. I opened the sources behind their claims one by one; this post only uses what I could verify against an official or academic source.
+
+## What is SEO, and what does it optimize?
+
+SEO (Search Engine Optimization) is the work of getting a site crawled, indexed and shown high in relevant searches on engines like Google and Bing. The unit SEO optimizes is the page: its title, description, content, technical accessibility and the links pointing to it.
+
+The success question of SEO is simple: "Where does this page rank for the query, and how many clicks does it get?" It is also the easiest to measure. Google Search Console reports impressions, clicks, click-through rate and average position.
+
+SEO is not only about the classic blue links. In its [AI features documentation](https://developers.google.com/search/docs/appearance/ai-features), Google writes that a page must be indexed and eligible to be shown with a snippet to appear as a supporting link in its AI answers. On Google, SEO is the foundation of the other three terms.
+
+## What is AEO?
+
+AEO (Answer Engine Optimization) is the work of writing content so that it can be lifted as the direct answer to a question. The goal of AEO is not a ranking but being chosen as the answer itself.
+
+AEO is used in two different widths:
+
+- **Narrow sense:** featured snippets, "People also ask" boxes and the one-sentence answers of voice assistants.
+- **Broad sense:** ChatGPT, Perplexity and Google's AI answers. In this usage AEO means almost the same as GEO.
+
+The acronym also collides with a customs term: AEO is the abbreviation of Authorized Economic Operator, a certification in international trade. A search for "what is AEO" can return customs results for this reason. Searching for "AEO SEO" or "Answer Engine Optimization" makes the intent clear.
+
+## What is GEO?
+
+GEO (Generative Engine Optimization) is the work of getting a brand or its content cited or named in the answers of generative systems such as ChatGPT, Perplexity, Gemini and Google's AI answers. Where SEO asks "Where does my page rank?", GEO asks "Does the AI cite me when it builds its answer?"
+
+GEO has the clearest academic origin of the four terms. The term comes from the [GEO paper](https://arxiv.org/abs/2311.09735) by Aggarwal and colleagues, published in 2023 and accepted at KDD 2024. The paper reports that its methods can increase a source's visibility in generative engine answers by up to 40 percent, with the effect varying by topic.
+
+In GEO, every platform has its own crawler and its own way of choosing sources. For example, OpenAI's [crawler documentation](https://developers.openai.com/api/docs/bots) recommends allowing OAI-SearchBot in robots.txt to appear in ChatGPT search; sites that block this bot are left out of ChatGPT's search answers. So a site that shows up in ChatGPT cannot be assumed to show up in Perplexity or Claude as well.
+
+## What is AIO, and why is it the vaguest term?
+
+AIO has no single accepted meaning in the industry. AIO is used in at least three different ways:
+
+1. **AI Optimization:** an umbrella term for all AI visibility work. In this usage AIO covers AEO and GEO.
+2. **AI Overviews optimization:** only about appearing in the AI summary Google shows above its search results.
+3. **All-in-One:** in software, AIO often means something unrelated.
+
+The three models I compared reflected this ambiguity. Claude described AIO as "usually Google AI Overviews", DeepSeek called it "AI Optimization, the sum of AEO and GEO", and ChatGPT said the term has no standard meaning and that anyone using it should state what they mean.
+
+Google's own product names add to the confusion. The feature is called "AI Overviews" in English, while in Turkish Google calls it "AI Bakışı". Google [announced on February 18, 2026](https://blog.google/intl/tr-tr/urun-duyurulari/turkiyede-ai-modu-ve-ai-bakisi-donemi-basliyor/) that AI Mode and AI Overviews were launching in Türkiye. In a proposal or a report, saying "we will increase visibility in Google AI Overviews" instead of "we will do AIO" settles up front what will be measured.
+
+## What are the differences between SEO, AEO, GEO and AIO?
+
+The core difference between SEO, AEO, GEO and AIO is where each one looks for success: SEO in the rankings, AEO in the direct answer, GEO among the sources of an AI answer, and AIO wherever the person using it means.
+
+| Term | Stands for | Goal | Where it matters | How it is measured |
+| --- | --- | --- | --- | --- |
+| SEO | Search Engine Optimization | Organic ranking and clicks | Google, Bing, Yandex | Search Console: impressions, clicks, position |
+| AEO | Answer Engine Optimization | Being chosen as the direct answer | Featured snippets, question boxes, voice assistants; in the broad sense, AI answers | Snippet visibility; in the broad sense, GEO metrics |
+| GEO | Generative Engine Optimization | Being cited or named in AI answers | ChatGPT, Perplexity, Gemini, Claude, Google AI Overviews | Repeated prompt tests, mention and citation rates |
+| AIO | AI Optimization or AI Overviews | Depends on who uses it | Depends on who uses it | Depends on who uses it |
+
+Treating these four terms as four separate jobs is misleading. All of them rest on the same foundation: content that can be crawled, is indexed, answers the question clearly and can be trusted.
+
+## Is GEO replacing SEO?
+
+No; according to Google, optimizing for AI search is still SEO. In its [generative AI optimization guide](https://developers.google.com/search/docs/fundamentals/ai-optimization-guide), dated July 10, 2026, Google describes AEO and GEO as terms used for SEO work focused on AI search experiences and states plainly that, from Google Search's perspective, this is still SEO.
+
+On X (Twitter), the most common debate around these terms is exactly this: "Is SEO dead?" Google's documentation gives a clear answer:
+
+- **No extra requirements.** Google says there are no additional technical requirements or special optimizations needed to appear in AI Overviews or AI Mode.
+- **The search index is a prerequisite.** Supporting links in AI answers come from pages in Google's search index. Google also says these features may use "query fan-out", splitting a question into subtopics and running several searches.
+- **No special AI files needed.** Google writes that you don't need AI text files such as llms.txt or new markup to appear in Google Search, and that such files neither help nor hurt.
+- **No need to rewrite for AI.** Google says content does not need to be chunked or rewritten for AI systems.
+
+There is an important limit here: these rules apply to Google's own systems. ChatGPT, Claude and Perplexity use their own crawlers. A page that ranks well on Google can still be missing from their answers if its robots.txt blocks those bots.
+
+## How are SEO and GEO measured?
+
+Measuring SEO with Search Console is straightforward; measuring GEO takes repetition and record keeping, because AI answers can change from one attempt to the next.
+
+**On Google:** Search Console has a generative AI performance report. According to [Google's help page](https://support.google.com/webmasters/answer/16984139), the report counts how many times links to a site were shown in AI Overviews, AI Mode and searches that used an image. It counts impressions, not clicks, and as of August 31, 2026 it has rolled out to all websites. Sites without enough impressions in these features may not see it.
+
+**On ChatGPT, Claude and Perplexity:** these platforms offer site owners no panel like Search Console. Measuring means preparing a list of questions, asking them at regular intervals and recording each result with its date. The main metrics tracked are:
+
+- **Mention rate:** in how many of the questions the brand's name appears.
+- **Citation rate:** in how many answers the site's link is given as a source.
+- **Share of voice:** how much space the brand takes in answers compared with competitors.
+
+A single attempt is not enough. The April 2026 study [Don't Measure Once](https://arxiv.org/abs/2604.07585) finds that AI answers vary across runs, prompt wording and time, so visibility should be treated as a distribution from repeated measurements rather than a single result. In my observation post on [how a local business shows up in AI answers](/en/blog/local-business-ai-answers-visibility), I saw the same search appear in Claude one time and not the next.
+
+## What did I set up on this site?
+
+While building this site, [Enes Şahin's portfolio](/en), I set up the following for SEO and GEO:
+
+- **A robots.txt open to AI crawlers:** I explicitly allowed AI bots including OAI-SearchBot, ChatGPT-User, ClaudeBot, Claude-SearchBot and PerplexityBot. In Next.js, a `robots.ts` file generates it:
+
+```ts title="src/app/robots.ts (shortened)"
+const aiAgents = ["GPTBot", "OAI-SearchBot", "ChatGPT-User", "ClaudeBot", "Claude-SearchBot", "PerplexityBot"];
+
+export default function robots(): MetadataRoute.Robots {
+  return {
+    rules: [{ userAgent: "*", allow: "/" }, ...aiAgents.map((userAgent) => ({ userAgent, allow: "/" }))],
+    sitemap: `${site.url}/sitemap.xml`,
+  };
+}
+```
+
+- **An entity graph with structured data:** on the home page, the Person, WebSite and ProfilePage schemas are linked to each other by `@id`. On blog posts, the BlogPosting schema points its author at the same Person entry, so a search engine finds the answer to "who wrote this?" in a single identity.
+- **A schema that matches the visible FAQ:** the questions at the end of each post and the FAQPage schema are generated from the same list, so the schema cannot claim anything the page does not show.
+- **The right canonical address:** I moved the canonical and hreflang addresses to the www address that does not redirect. I wrote about this mistake in my post on [multilingual sites in Next.js](/en/blog/nextjs-multilingual-site-hreflang-canonical).
+- **llms.txt:** the site has an `llms.txt` file, but my expectations are low. Google says plainly that it doesn't use the file, and I don't know of an official statement confirming other providers read it. It stays because it costs little; I don't count it as a strategy.
+
+I haven't measured yet how much these steps affect this site's visibility; the site is new and measuring takes a few weeks. I'll update this post as I measure the results.

@@ -1,0 +1,116 @@
+I'm Enes Şahin, and since 2022 I have used Prisma and PostgreSQL in an e-commerce backend running in production. In this post I explain the decisions I consider important when designing a schema from scratch, using an example order schema.
+
+## Why Prisma
+
+Prisma is an ORM that lets you define your database schema in a single file (`schema.prisma`) and generate both migrations and a type-safe client from it. Its advantage over writing raw SQL is that when you change a field in the schema, the TypeScript compiler immediately shows you every place that uses it; if you set up a relation wrong, you notice in the editor, not in production.
+
+## Building models with relations
+
+In an order system, the relations between user, order and order item look like this:
+
+```prisma title="schema.prisma"
+model User {
+  id     String  @id @default(cuid())
+  email  String  @unique
+  role   Role    @default(CUSTOMER)
+  orders Order[]
+}
+
+model Order {
+  id         String      @id @default(cuid())
+  userId     String
+  user       User        @relation(fields: [userId], references: [id])
+  status     OrderStatus @default(PENDING)
+  items      OrderItem[]
+  totalCents Int
+  createdAt  DateTime    @default(now())
+
+  @@index([userId])
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String
+  quantity  Int
+  priceCents Int
+}
+
+enum Role {
+  CUSTOMER
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  SHIPPED
+  CANCELLED
+}
+```
+
+A few decisions here are worth highlighting:
+
+- **Store money as an `Int` (in cents), not a `Float`.** Floating point numbers can produce rounding errors in money calculations; an amount like 10.10 can sometimes be stored as 10.099999999 with a `Float`. Converting to cents and storing a whole number removes this whole class of bugs.
+- **An `OrderItem` is deleted automatically with `onDelete: Cascade` when its `Order` is deleted**, but an `Order` is not deleted when its `User` is (I didn't add a cascade). An order's items mean nothing without the order, but the order history must remain even if a user is deleted; accounting and refund processes depend on it.
+- **`@@index([userId])`**: "get the user's orders" is one of the most frequent queries in an order system, so it makes sense to define an explicit index on `userId`. Prisma doesn't add indexes for foreign keys automatically; you have to write them yourself.
+
+## The migration flow
+
+When you change the schema:
+
+```bash
+npx prisma migrate dev --name add_order_status
+```
+
+This command both generates a new SQL migration file and applies it to the local database. Migration files should be committed to git; when you deploy to production, `prisma migrate deploy` applies the same files in order. That way there is no drift between the local schema and the production schema, and "it worked on my machine" problems disappear at the migration level.
+
+## The N+1 query trap
+
+The most common mistake when fetching related data in Prisma is running queries inside a loop:
+
+```ts
+// Bad: runs a separate query for each order (N+1)
+const orders = await prisma.order.findMany();
+for (const order of orders) {
+  order.items = await prisma.orderItem.findMany({ where: { orderId: order.id } });
+}
+```
+
+Instead, I fetch the relation in a single query with `include`:
+
+```ts
+// Good: a single query, with a join
+const orders = await prisma.order.findMany({
+  include: { items: true },
+});
+```
+
+For a list of 100 orders, the first runs 101 queries while the second runs one. The difference doesn't show on small data sets, but as the list grows the first approach becomes a real performance problem.
+
+## Data integrity with transactions
+
+Creating an order both opens an `Order` record and decreases the stock. If one of these two operations succeeds and the other fails (for example, when stock is insufficient), the database ends up in an inconsistent state. `$transaction` prevents this:
+
+```ts
+await prisma.$transaction(async (tx) => {
+  const product = await tx.product.findUniqueOrThrow({ where: { id: productId } });
+  if (product.stock < quantity) throw new Error("Insufficient stock");
+
+  await tx.product.update({
+    where: { id: productId },
+    data: { stock: { decrement: quantity } },
+  });
+
+  await tx.order.create({
+    data: { userId, totalCents, items: { create: [{ productId, quantity, priceCents }] } },
+  });
+});
+```
+
+If any step inside the transaction throws, every change made up to that point is rolled back. This removes the risk of a half-finished record where the stock was decreased but the order was never created.
+
+## Conclusion
+
+The four decisions I consider important when designing a Prisma schema: store money fields as whole numbers, choose cascade rules based on the real life cycle of the data, don't forget indexes on frequently queried fields, and wrap multi-step operations in a transaction. None of these are specific to Prisma, but Prisma makes these decisions clearly visible in the schema.

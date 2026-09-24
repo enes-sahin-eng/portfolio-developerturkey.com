@@ -1,0 +1,88 @@
+I'm Enes Şahin. I built this site (developerturkey.com) in Turkish and English with the Next.js App Router. Before that, I worked on a trilingual school website with more than 200 pages. In this post I explain how to set up hreflang and canonical correctly on a multilingual Next.js site, along with a real mistake I made on my own site.
+
+## URL structure: prefix or subdomain?
+
+A multilingual site has a few options: separate subdomains like `tr.site.com`, a path prefix like `site.com/tr`, or serving different content at the same URL based on the browser language. The last option is bad for SEO, because Google needs each language at its own URL. I chose a path prefix; a subdomain needs DNS and certificate management, which is unnecessary complexity for a small site.
+
+```
+app/
+  [locale]/
+    layout.tsx
+    page.tsx
+```
+
+A request to the root address (`/`) is redirected to `/tr` or `/en` based on the browser's `Accept-Language` header:
+
+```ts title="src/proxy.ts"
+export function proxy(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+  const hasLocale = locales.some((l) => pathname === `/${l}` || pathname.startsWith(`/${l}/`));
+  if (hasLocale) return;
+
+  const locale = pickLocale(request.headers.get("accept-language"));
+  const url = request.nextUrl.clone();
+  url.pathname = `/${locale}${pathname === "/" ? "" : pathname}`;
+  return NextResponse.redirect(url);
+}
+```
+
+## hreflang: telling Google which page is in which language
+
+hreflang is a tag that links the different language versions of the same content to each other. Without it, Google may treat the Turkish and English pages as two unrelated pages; sometimes it even takes one for a duplicate of the other and hides it. In Next.js I set it with `alternates.languages` inside `generateMetadata`:
+
+```ts title="app/[locale]/layout.tsx"
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+
+  return {
+    alternates: {
+      canonical: `/${locale}`,
+      languages: {
+        tr: "/tr",
+        en: "/en",
+        "x-default": "/tr",
+      },
+    },
+  };
+}
+```
+
+Three things need attention:
+
+- **Every language lists its own `hreflang` too.** The TR page lists both the `tr` and `en` alternates, and the EN page does the same. Pointing only at the other language isn't enough; Google's recommended method is for every page to list all alternates, including itself.
+- **`x-default` isn't tied to a language**; it points to the default for visitors who match no language. On this site it points to the Turkish version.
+- **An hreflang value must lead to a real page.** Adding hreflang for a language a page hasn't been translated into yet sends Google to a page that doesn't exist.
+
+## Canonical: pointing to the real live address
+
+The canonical tag says which address is the "main" one for a page. It matters for duplicate content, or when the same page can be reached through more than one path. This is where I made a mistake that really cost me time.
+
+I deployed this site on Vercel's free plan. By default, Vercel redirects the apex domain (`developerturkey.com`) to the `www` version with a 308, so the real live address is `www.developerturkey.com`. But I had written the canonical, hreflang, sitemap and JSON-LD schema with `developerturkey.com` (without www). So every canonical tag on the site pointed not to itself, but to an address that redirected with a 308.
+
+I noticed when Google Search Console showed errors like "robots.txt unreachable" and "sitemap could not be read". The fix was changing a single variable, because the site address was read from one place throughout the code:
+
+```ts title="src/lib/site.ts"
+export const site = {
+  // Vercel redirects the apex to www with a 308; site.url must be the real live address.
+  url: "https://www.developerturkey.com",
+  // ...
+};
+```
+
+The lesson I took from this: **the address in the canonical, hreflang and sitemap must be the target of a redirect, not its source.** If your hosting provider redirects the apex to www (or the other way around), you have to make the same decision in code. A simple way to check: send a request to your canonical URL with `curl -I`; it must return 200. If it returns a 30x, your canonical points to the wrong address.
+
+## The language switcher
+
+When a user switches language, they should land on the same page in the other language, not on the home page. I also add the `hrefLang` attribute, which tells screen readers and browsers which language the link leads to:
+
+```tsx title="src/components/LanguageSwitch.tsx"
+{locales.map((value) => (
+  <Link key={value} href={localePath(value)} hrefLang={value}>
+    {labels[value]}
+  </Link>
+))}
+```
+
+## Conclusion
+
+A multilingual Next.js site needs three things set up correctly for SEO: a self-referencing canonical on every page, hreflang tags in every language that point to each other, and `x-default`. But even when all of these are right, a single wrong base address (like my www mistake) can invalidate them all. After deploying a site, the first thing to check is that the canonical really returns 200.

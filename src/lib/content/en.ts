@@ -38,7 +38,7 @@ export const en: Content = {
   work: {
     heading: "What I have built",
     intro:
-      "Work running in production, and the decisions behind it. Client names are not shared on this page; some projects are described by their architecture only, with representative visuals.",
+      "Work running in production, and the decisions behind it. Client names are not shared on this page; some projects are described by their architecture only, with representative visuals. Alongside these, I also do smaller jobs for businesses, such as QR menus and Google Business Profile setups.",
     projects: [
       {
         slug: "pnr-eticaret",
@@ -59,11 +59,39 @@ export const en: Content = {
           },
         ],
         stack: ["Next.js (App Router)", "Node.js", "Express", "TypeScript", "Prisma", "PostgreSQL", "Docker"],
+        links: [
+          {
+            label: "How does a local business show up in AI answers?",
+            href: "/en/blog/local-business-ai-answers-visibility",
+          },
+        ],
         image: {
           src: "/media/work-pnr.jpg",
           alt: "Home screen of the PNR e-commerce platform: a full width product image with the collection headline over it, category menu and cart above",
           width: 1440,
           height: 900,
+        },
+      },
+      {
+        slug: "packed-lunch-admin-panel-site",
+        title: "An order-focused site and panel for a packed lunch business",
+        kind: "Agency project, 2026",
+        summary:
+          "A site and admin panel I built from scratch for a business that prepares daily packed lunches for offices, clinics and businesses. The owner prepares and publishes each day's menus from the panel; customers see the day's menu on the site or on a menu page opened by a QR code, and order on WhatsApp with one tap.",
+        architecture: [
+          "A REST API in Express 5 and TypeScript on PostgreSQL through Prisma. Each date has a single daily menu record, and the owner can prepare and publish menus for future days in advance. \"Today\" is calculated in Istanbul time, not the server's time zone.",
+          "Frequently used menus sit in a library of fixed menus and are copied, with their dishes and photo, when added to a day. Dish types, site copy, the logo and the favicon generated from it are also changed from the panel without touching code.",
+          "A WhatsApp link can't carry a photo, so the order message includes a link to the menu's detail page; WhatsApp reads that page's og:image and shows a preview card with the photo under the message.",
+          "Photos uploaded from a phone are resized with sharp and stored in the database, so no separate storage service is needed. A version parameter in the image URL keeps browsers and WhatsApp from showing the old photo after it changes.",
+          "The panel login uses bcrypt, with JWTs carried in httpOnly, sameSite strict cookies. Each device gets its own session, and only a SHA-256 hash of the refresh token is stored. Rate limiting applies only to the login and panel endpoints, based on the real visitor IP through the trust proxy setting.",
+        ],
+        stack: ["Next.js (App Router)", "Express", "TypeScript", "Prisma", "PostgreSQL", "JWT", "sharp"],
+        image: {
+          src: "/media/work-lunch-panel.jpg",
+          alt: "Representative visual: a packed lunch site's home screen, headline and WhatsApp order button on the left, today's menu cards on the right",
+          width: 1440,
+          height: 900,
+          illustrative: true,
         },
       },
       {

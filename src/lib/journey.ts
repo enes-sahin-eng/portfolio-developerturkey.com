@@ -76,6 +76,7 @@ export const PROJECT_STOPS: readonly Vec3[] = [
   [1.9, 1.7, -28],
   [-1.9, 1.7, -37],
   [1.9, 1.7, -46],
+  [-1.9, 1.7, -55],
 ];
 
 /** Beats each project holds the camera for. */

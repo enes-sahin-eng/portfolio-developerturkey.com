@@ -198,11 +198,11 @@ export const posts: Post[] = [
     description:
       "Bir çanta mağazasının sitesi ChatGPT ve Google AI cevaplarında çıkmaya başladı. Ne gözlemlediğimi, neyi bilmediğimi ve önerdiklerimi anlatıyorum. Oku!",
     publishedAt: "2026-09-19",
-    updatedAt: "2026-09-19",
+    updatedAt: "2026-09-27",
     faq: [
       {
         q: "Yapay zeka cevaplarında çıkmak için ne yapılır?",
-        a: "Kesin bir yöntem yok. Yaygın olarak önerilenler: yapay zeka botlarını robots.txt'te engellememek, Google işletme profilini eksiksiz doldurmak, işletme bilgilerini her yerde aynı yazmak, siteyi net bir cümleyle tanımlamak ve yapısal veri eklemek. Bu yazıdaki gözlem yalnızca üç günlüktür.",
+        a: "Kesin bir yöntem yok. Yaygın olarak önerilenler: yapay zeka botlarını robots.txt'te engellememek, Google işletme profilini eksiksiz doldurmak, işletme bilgilerini her yerde aynı yazmak, siteyi net bir cümleyle tanımlamak ve yapısal veri eklemek. Search Console ve GA4 verileri artık ChatGPT'den gelen küçük ama ölçülebilir bir trafiği doğruluyor.",
       },
       {
         q: "llms.txt yapay zekada çıkmayı sağlar mı?",
@@ -430,11 +430,11 @@ export const posts: Post[] = [
     description:
       "A bag shop's website started showing up in ChatGPT and Google AI answers. I share what I observed, what I don't know and what I recommend. Read it now!",
     publishedAt: "2026-09-25",
-    updatedAt: "2026-09-25",
+    updatedAt: "2026-09-27",
     faq: [
       {
         q: "What do you do to show up in AI answers?",
-        a: "There is no definite method. Commonly recommended steps: not blocking AI bots in robots.txt, filling in the Google Business Profile completely, writing the business details the same everywhere, describing the site in a clear sentence and adding structured data. The observation in this post covers only three days.",
+        a: "There is no definite method. Commonly recommended steps: not blocking AI bots in robots.txt, filling in the Google Business Profile completely, writing the business details the same everywhere, describing the site in a clear sentence and adding structured data. Search Console and GA4 data now confirm a small but measurable amount of traffic from ChatGPT.",
       },
       {
         q: "Does llms.txt make a site show up in AI answers?",

@@ -38,7 +38,7 @@ export const tr: Content = {
   work: {
     heading: "Neler geliştirdim",
     intro:
-      "Üretimde çalışan işler ve arkalarındaki kararlar. Müşteri projelerinde kurum adları paylaşılmıyor; bazı projelerde yalnızca mimari anlatılıyor ve görseller temsilidir.",
+      "Üretimde çalışan işler ve arkalarındaki kararlar. Müşteri projelerinde kurum adları paylaşılmıyor; bazı projelerde yalnızca mimari anlatılıyor ve görseller temsilidir. Bunların yanında işletmeler için QR menüler ve Google İşletme Profili kurulumları gibi daha küçük işler de yapıyorum.",
     projects: [
       {
         slug: "pnr-eticaret",
@@ -59,11 +59,39 @@ export const tr: Content = {
           },
         ],
         stack: ["Next.js (App Router)", "Node.js", "Express", "TypeScript", "Prisma", "PostgreSQL", "Docker"],
+        links: [
+          {
+            label: "Yerel işletme yapay zeka cevaplarında nasıl çıkar?",
+            href: "/tr/blog/yerel-isletme-yapay-zeka-cevaplarinda-nasil-cikar",
+          },
+        ],
         image: {
           src: "/media/work-pnr.jpg",
           alt: "PNR e-ticaret platformunun ana sayfası: tam genişlikte ürün görseli üzerinde koleksiyon başlığı, üstte kategori menüsü ve sepet",
           width: 1440,
           height: 900,
+        },
+      },
+      {
+        slug: "paket-yemek-yonetim-panelli-site",
+        title: "Bir paket yemek işletmesi için sipariş odaklı site ve panel",
+        kind: "Ajans projesi, 2026",
+        summary:
+          "Ofis, klinik ve işletmelere günlük paket yemek hazırlayan bir işletme için sıfırdan geliştirdiğim site ve yönetim paneli. İşletme sahibi her günün menülerini panelden hazırlayıp yayına alıyor; müşteri günün menüsünü sitede ya da QR kodla açılan menü sayfasında görüp tek dokunuşla WhatsApp'tan sipariş veriyor.",
+        architecture: [
+          "Express 5 ve TypeScript ile REST API, Prisma üzerinden PostgreSQL. Her tarih için tek bir günlük menü kaydı var; sahibi ileri tarihli menüleri önceden hazırlayıp yayına alabiliyor. \"Bugün\" sunucunun saatine göre değil, İstanbul saatine göre hesaplanıyor.",
+          "Sık kullanılan menüler bir sabit menü kütüphanesinde duruyor ve bir güne eklenirken yemekleri ve fotoğrafıyla kopyalanıyor. Yemek türleri, site yazıları, logo ve ondan üretilen sekme simgesi de koda dokunmadan panelden değişiyor.",
+          "WhatsApp linki fotoğraf taşıyamadığı için sipariş mesajına menünün detay sayfasının linki ekleniyor; WhatsApp o sayfanın og:image etiketini okuyup mesajın altında fotoğraflı bir önizleme kartı gösteriyor.",
+          "Telefondan yüklenen fotoğraflar sharp ile küçültülüp veritabanında saklanıyor, ayrı bir depolama servisi gerekmiyor. Görsel adresindeki sürüm parametresi, fotoğraf değişince tarayıcının ve WhatsApp'ın eski görseli göstermesini engelliyor.",
+          "Panel girişi bcrypt ve httpOnly, sameSite strict çerezlerde taşınan JWT ile korunuyor. Her cihaz kendi oturumunu alıyor ve refresh token'ın kendisi değil SHA-256 özeti saklanıyor. Hız sınırı yalnızca giriş ve panel uçlarında, trust proxy ayarıyla gerçek ziyaretçi IP'sine göre uygulanıyor.",
+        ],
+        stack: ["Next.js (App Router)", "Express", "TypeScript", "Prisma", "PostgreSQL", "JWT", "sharp"],
+        image: {
+          src: "/media/work-lunch-panel.jpg",
+          alt: "Temsili görsel: bir paket yemek sitesinin ana ekranı, solda başlık ve WhatsApp sipariş butonu, sağda günün menü kartları",
+          width: 1440,
+          height: 900,
+          illustrative: true,
         },
       },
       {

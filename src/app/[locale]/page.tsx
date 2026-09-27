@@ -213,6 +213,23 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
                   <p className="mt-5 mb-0 text-[0.8rem]" style={{ color: "var(--c-ink-soft)" }}>
                     {project.stack.join(", ")}
                   </p>
+                  {project.links && (
+                    <p className="mt-3 mb-0 flex flex-wrap gap-x-5 text-[0.9rem]">
+                      {project.links.map((link) => {
+                        const external = /^https?:\/\//.test(link.href);
+                        return (
+                          <a
+                            key={link.href}
+                            href={link.href}
+                            {...(external ? { target: "_blank", rel: "noreferrer" } : {})}
+                            className="font-semibold underline"
+                          >
+                            {link.label}
+                          </a>
+                        );
+                      })}
+                    </p>
+                  )}
                 </div>
               </div>
             </article>

@@ -14,6 +14,8 @@ I typed the same searches into different AI tools. Before the changes, the shop 
 
 The result is more stable with the district name: in the search with Beylikdüzü, both ChatGPT and Claude show the business at the top, while in the search without it the result in Claude varies.
 
+**Update, September 27, 2026:** In searches that include the district name, the business now shows up consistently. In broader searches without it, the result is still inconsistent despite further SEO tuning; I'm still working on this.
+
 ## What did I do?
 
 These are the steps I can share:
@@ -49,7 +51,17 @@ I don't know, and I want to say that clearly:
 3. **There are steps I'm not sharing.** I can't say the steps in this list are enough on their own.
 4. **AI answers vary.** In Claude, the same search doesn't show the shop every time. So seeing an answer once doesn't mean it will always be seen.
 5. **The effect of `llms.txt` isn't proven.** As far as I know, there is no official statement confirming that the major providers read this file, so I don't attribute the result to it.
-6. **In local searches, the business profile may carry a lot of weight.** In searches that include a district name, the Google Business Profile may play a large part. This is a guess, not something I measured.
+6. **In local searches, the business profile may carry a lot of weight.** In searches that include a district name, the Google Business Profile may play a large part. This was a guess; I've since confirmed with the owner that the "business" step really was the Google Business Profile, but I still haven't measured how much weight it carries.
+
+## What do Search Console and Analytics say?
+
+Eight days later, I could finally look at measured data instead of guessing. On September 27, 2026, I checked the shop's Search Console and Google Analytics accounts, and found two things.
+
+Google Search Console's generative AI performance report is now producing data. This report counts how many times links to the site were shown in Google's AI Overviews and AI Mode answers; it measures impressions, not clicks. In the window shown (September 15–24), there were 149 total impressions, with the daily chart showing a clear rise on September 21–22.
+
+GA4 shows measurable traffic from ChatGPT. In the same window, 12 of 1,390 total sessions (0.86%) came through `chatgpt.com`, and GA4 groups these into a separate "AI Assistant" channel. The number is small, but for the first time in this post it's a figure a first-party analytics tool measured directly, not a guess. These sessions have a 66.7% engagement rate, close to the site's overall engagement rate (77.6%), meaning the visitors who arrive this way actually use the page.
+
+To be honest, these numbers don't show the real traffic driver: in the same window, 54% of sessions came from Instagram and 23% from Google organic search; ChatGPT is still a very small slice of traffic. These figures are also site-wide, not specific to the searches in the table above; Search Console doesn't break the AI impressions down by query. Still, this is the first time the question moves past "did it show up or not" into something backed by a number.
 
 ## How do I test my own searches?
 

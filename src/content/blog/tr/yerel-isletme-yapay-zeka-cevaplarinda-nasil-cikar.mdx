@@ -14,6 +14,8 @@ Aynı aramaları farklı yapay zekalarda yazdım. Değişikliklerden önce mağa
 
 İlçe adı eklenince sonuç daha sağlam: Beylikdüzü'lü aramada hem ChatGPT hem Claude işletmeyi en üstte gösteriyor, ilçesiz aramada ise Claude'da sonuç değişken.
 
+**27 Eylül 2026 güncellemesi:** İlçe adı içeren aramalarda işletme artık tutarlı biçimde çıkıyor. İlçesiz, genel aramalarda ise ek SEO ayarları yapmama rağmen hâlâ istikrarsız; bu konuda çalışmaya devam ediyorum.
+
 ## Ne yaptım?
 
 Paylaşabildiğim adımlar şunlar:
@@ -49,7 +51,17 @@ Bilmiyorum, ve bunu açıkça söylemek istiyorum:
 3. **Paylaşmadığım adımlar da var.** Bu tablodaki adımların tek başına yeterli olduğunu söyleyemem.
 4. **Yapay zeka cevapları değişken.** Claude'da aynı arama her seferinde çıkmıyor. Bu yüzden bir cevabı görmek, her zaman görüleceği anlamına gelmiyor.
 5. **`llms.txt` etkisi kanıtlı değil.** Büyük sağlayıcıların bu dosyayı okuduğunu doğrulayan resmi bir açıklama bildiğim kadarıyla yok, bu yüzden sonucu ona bağlamıyorum.
-6. **Yerel aramada işletme profili ağırlıklı olabilir.** İlçe adı içeren aramalarda Google işletme profilinin payı büyük olabilir. Bu bir tahmin, ölçtüğüm bir şey değil.
+6. **Yerel aramada işletme profili ağırlıklı olabilir.** İlçe adı içeren aramalarda Google işletme profilinin payı büyük olabilir. Bu bir tahmindi; işletme sahibinden "işletme" adımının gerçekten Google İşletme Profili olduğunu doğruladım, ama payının ne kadar büyük olduğunu hâlâ ölçmüş değilim.
+
+## Search Console ve Analytics ne diyor?
+
+Sekiz gün sonra ilk kez tahmine değil ölçülen veriye bakabildim. 27 Eylül 2026'da işletmenin Search Console ve Google Analytics hesaplarına baktım, iki bulgu var.
+
+Google Search Console'un üretken yapay zeka raporu artık veri veriyor. Bu rapor, sitenin linklerinin Google'ın AI Bakışı ve AI Modu cevaplarında kaç kez gösterildiğini sayıyor; tıklamayı değil gösterimi ölçüyor. Görüntülenen pencerede (15-24 Eylül) toplam 149 gösterim var ve günlük grafik 21-22 Eylül'de belirgin bir yükseliş gösteriyor.
+
+GA4'te ChatGPT'den ölçülebilir bir trafik var. Aynı pencerede toplam 1.390 oturumun 12'si `chatgpt.com` üzerinden geldi (%0,86) ve GA4 bunları ayrı bir "AI Assistant" kanalında grupluyor. Sayı küçük ama bu yazıda ilk kez tahmin değil, birinci taraf bir analitik aracının doğrudan ölçtüğü bir rakam. Bu oturumların etkileşim oranı %66,7; sitedeki genel etkileşim oranına (%77,6) yakın, yani gelen ziyaretçiler sayfayı gerçekten kullanıyor.
+
+Dürüst olmak gerekirse bu veriler asıl trafiği göstermiyor: aynı pencerede oturumların %54'ü Instagram'dan, %23'ü Google organik aramadan geliyor; ChatGPT hâlâ trafiğin çok küçük bir parçası. Ayrıca bu rakamlar sitenin geneli için, yalnızca tablodaki aramalar için değil; Search Console sorgu bazında yapay zeka gösterimi vermiyor. Yine de bu, "çıktı mı çıkmadı mı" sorusunun ötesine geçip ilk kez sayıya dayanan bir gösterge.
 
 ## Kendi aramamı nasıl test ederim?
 
